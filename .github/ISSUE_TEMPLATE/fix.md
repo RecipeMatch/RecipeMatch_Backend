@@ -2,7 +2,7 @@
 name: fix
 about: 버그 수정 및 설명
 title: "[Fix]"
-labels: ''
+labels: '버그수정'
 assignees: ''
 
 ---

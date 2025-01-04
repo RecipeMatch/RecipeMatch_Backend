@@ -1,8 +1,8 @@
 ---
-name: refactor
+name: 리팩토링
 about: 코드 리팩토링
 title: "[Refactor]"
-labels: ''
+labels: '리팩토링'
 assignees: ''
 
 ---

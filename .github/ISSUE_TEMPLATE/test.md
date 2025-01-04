@@ -1,8 +1,8 @@
 ---
-name: test
+name: 테스트
 about: 테스트 작성
 title: "[Test]"
-labels: ''
+labels: '테스트'
 assignees: ''
 
 ---

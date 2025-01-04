@@ -1,8 +1,8 @@
 ---
-name: setting
+name: 환경 설정
 about: 개발 환경 세팅
 title: "[Chore]"
-labels: ''
+labels: '환경설정'
 assignees: ''
 
 ---

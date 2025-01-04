@@ -1,7 +1,7 @@
 ---
-name: 기능 구현
-about: '기능 구현 및 설명 '
-title: "[feat]"
+name: fix
+about: 버그 수정 및 설명
+title: "[Fix]"
 labels: ''
 assignees: ''
 

@@ -1,7 +1,7 @@
 ---
-name: 기능 구현
-about: '기능 구현 및 설명 '
-title: "[feat]"
+name: test
+about: 테스트 작성
+title: "[Test]"
 labels: ''
 assignees: ''
 

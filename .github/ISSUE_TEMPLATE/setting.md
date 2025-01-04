@@ -1,7 +1,7 @@
 ---
-name: 기능 구현
-about: '기능 구현 및 설명 '
-title: "[feat]"
+name: setting
+about: 개발 환경 세팅
+title: "[Chore]"
 labels: ''
 assignees: ''
 

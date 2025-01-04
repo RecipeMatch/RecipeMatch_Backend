@@ -1,7 +1,7 @@
 ---
-name: 기능 구현
-about: '기능 구현 및 설명 '
-title: "[feat]"
+name: refactor
+about: 코드 리팩토링
+title: "[Refactor]"
 labels: ''
 assignees: ''
 

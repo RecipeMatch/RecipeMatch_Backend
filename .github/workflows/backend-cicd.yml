@@ -51,9 +51,9 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull jimineutron/recipematch-backend:latest
-            docker-compose down
-            docker-compose up -d
+            sudo docker rm -f $(sudo docker ps -qa)
+            sudo docker pull jimineutron/recipematch-backend:latest
+            sudo docker run -d -p 8080:8080 jimineutron/recipematch-backend:latest
 
       - name: Notify Slack
         if: ${{ success() }}

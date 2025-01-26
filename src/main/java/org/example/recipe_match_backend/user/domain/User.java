@@ -3,6 +3,7 @@ package org.example.recipe_match_backend.user.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.recipe_match_backend.global.entity.BaseEntity;
+import org.example.recipe_match_backend.recipe.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -12,7 +12,7 @@ jobs:
         image: mysql:latest
         env:
           MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
-          MYSQL_URL: ${{ jdbc:mysql://localhost:3306/recipematch?useSSL=false&serverTimezone=UTC }}
+          MYSQL_URL: ${{ secrets.MYSQL_URL }}
           MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
           MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
           MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}

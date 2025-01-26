@@ -3,6 +3,7 @@ package org.example.recipe_match_backend.recipe.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.recipe_match_backend.global.entity.BaseEntity;
+import org.example.recipe_match_backend.searchhistory.domain.SearchHistory;
 import org.example.recipe_match_backend.type.CategoryType;
 import org.example.recipe_match_backend.type.DifficultyType;
 import org.example.recipe_match_backend.user.domain.User;
@@ -59,5 +60,8 @@ public class Recipe extends BaseEntity {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
     private List<RecipeRating> ratings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
+    private List<SearchHistory> searchHistories = new ArrayList<>();
 
 }

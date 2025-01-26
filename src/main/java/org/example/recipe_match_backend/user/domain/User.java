@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.example.recipe_match_backend.global.entity.BaseEntity;
 import org.example.recipe_match_backend.recipe.domain.*;
+import org.example.recipe_match_backend.searchhistory.domain.SearchHistory;
 
 import java.util.ArrayList;
 import java.util.List;

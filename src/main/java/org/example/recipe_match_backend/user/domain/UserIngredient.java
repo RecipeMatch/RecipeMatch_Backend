@@ -2,6 +2,7 @@ package org.example.recipe_match_backend.user.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.recipe_match_backend.ingredient.domain.Ingredient;
 
 @Getter
 @AllArgsConstructor

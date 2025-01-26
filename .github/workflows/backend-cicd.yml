@@ -44,7 +44,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Build with Gradle
+      - name: Test with Gradle
         run: ./gradlew test
 
       - name: Build Docker image

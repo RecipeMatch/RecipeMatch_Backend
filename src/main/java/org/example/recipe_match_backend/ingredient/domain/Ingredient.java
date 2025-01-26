@@ -21,11 +21,9 @@ public class Ingredient {
 
     private String ingredientName;
 
-    // 레시피 <-> 재료 관계
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.PERSIST)
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
-    // User <-> 재료 관계
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.PERSIST)
     private List<UserIngredient> userIngredients = new ArrayList<>();
 

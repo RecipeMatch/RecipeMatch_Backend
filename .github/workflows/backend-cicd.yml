@@ -7,6 +7,23 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          MYSQL_URL: ${{ jdbc:mysql://localhost:3306/recipematch?useSSL=false&serverTimezone=UTC }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -25,8 +42,11 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle (Test 포함)
-        run: ./gradlew build test
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Test with Gradle
+        run: ./gradlew test
 
       - name: Build Docker image
         run: docker build -t jimineutron/recipematch-backend:latest .
@@ -44,17 +64,17 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-push
     steps:
-  #    - name: SSH to EC2 and deploy
-  #      uses: appleboy/ssh-action@master
-  #      with:
-  #        host: ${{ secrets.EC2_HOST }}
-  #        username: ${{ secrets.EC2_USERNAME }}
-  #        key: ${{ secrets.EC2_SSH_KEY }}
-  #        script: |
-  #          sudo docker
-  #          sudo docker rm -f $(sudo docker ps -qa)
-  #          sudo docker pull jimineutron/recipematch-backend:latest
-  #          sudo docker run -d -p 8080:8080 jimineutron/recipematch-backend:latest
+      #    - name: SSH to EC2 and deploy
+      #      uses: appleboy/ssh-action@master
+      #      with:
+      #        host: ${{ secrets.EC2_HOST }}
+      #        username: ${{ secrets.EC2_USERNAME }}
+      #        key: ${{ secrets.EC2_SSH_KEY }}
+      #        script: |
+      #          sudo docker
+      #          sudo docker rm -f $(sudo docker ps -qa)
+      #          sudo docker pull jimineutron/recipematch-backend:latest
+      #          sudo docker run -d -p 8080:8080 jimineutron/recipematch-backend:latest
 
       - name: Notify Slack
         if: ${{ success() }}
@@ -65,4 +85,3 @@ jobs:
           SLACK_TITLE: 'Build and Deploy'
           SLACK_TEXT: '✅ **백엔드 배포 성공**
           - Docker 이미지: jimineutron/recipematch-backend:latest'
-

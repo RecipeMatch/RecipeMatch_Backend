@@ -41,8 +41,15 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build with Gradle (Test 포함)
-        run: ./gradlew build test
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Test with Gradle
+        env:
+          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/testdb
+          SPRING_DATASOURCE_USERNAME: testuser
+          SPRING_DATASOURCE_PASSWORD: testpassword
+        run: ./gradlew test
 
       - name: Build Docker image
         run: docker build -t jimineutron/recipematch-backend:latest .

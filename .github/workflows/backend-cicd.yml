@@ -7,6 +7,16 @@ on:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0.33
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+          MYSQL_DATABASE: ${{ secrets.MYSQL_DATABASE }}
+          MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+        ports:
+          - 3306:3306
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -15,14 +25,6 @@ jobs:
         run: |
           touch ./.env
           echo "${{ secrets.DOCKER_ENV }}" > ./.env
-          
-      - name: Setup MySQL
-        uses: samin/mysql-action@v1
-        with:
-          character set server: 'utf8' 
-          mysql database: ${{ secrets.MYSQL_DATABASE }} 
-          mysql user: ${{ secrets.MYSQL_USERNAME }}
-          mysql password: ${{ secrets.MYSQL_PASSWORD }}
 
       - name: Set up JDK
         uses: actions/setup-java@v3

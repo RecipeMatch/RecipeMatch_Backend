@@ -31,28 +31,16 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Wait for MySQL to be ready
-        run: |
-          wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-          chmod +x wait-for-it.sh
-          ./wait-for-it.sh localhost:3306 --timeout=30 --strict
-
-      - name: Print Environment Variables
-        run: |
-          echo "MYSQL_URL=${{ secrets.MYSQL_URL }}"
-          echo "MYSQL_USERNAME=${{ secrets.MYSQL_USERNAME }}"
-          echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}"
-
       - name: Build with Gradle
         env:
-          MYSQL_URL: jdbc:mysql://localhost:3306/recipematch?useSSL=false&serverTimezone=UTC
+          MYSQL_URL: ${{ secrets.MYSQL_URL }}
           MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
           MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
         run: ./gradlew build
 
       - name: Test with Gradle
         env:
-          MYSQL_URL: jdbc:mysql://localhost:3306/recipematch?useSSL=false&serverTimezone=UTC
+          MYSQL_URL: ${{ secrets.MYSQL_URL }}
           MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
           MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
         run: ./gradlew test

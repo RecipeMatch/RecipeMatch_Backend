@@ -14,7 +14,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 @Entity
 public class User extends BaseEntity {
 

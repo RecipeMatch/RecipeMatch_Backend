@@ -7,7 +7,6 @@ import org.example.recipe_match_backend.tool.domain.Tool;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 @Entity
 public class UserTool {
 

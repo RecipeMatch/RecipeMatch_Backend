@@ -6,7 +6,6 @@ import lombok.*;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 @Entity
 public class RecipeStep {
 

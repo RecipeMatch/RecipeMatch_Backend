@@ -7,7 +7,6 @@ import org.example.recipe_match_backend.allergy.domain.Allergy;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 @Entity
 public class UserAllergy {
 

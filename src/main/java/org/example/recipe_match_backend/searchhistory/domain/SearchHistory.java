@@ -10,7 +10,6 @@ import org.example.recipe_match_backend.user.domain.User;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 @Entity
 public class SearchHistory extends BaseEntity {
 

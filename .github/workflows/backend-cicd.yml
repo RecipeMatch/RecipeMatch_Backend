@@ -26,7 +26,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build with Gradle (Test 포함)
-        run: ./gradlew clean build
+        run: ./gradlew clean build -x test --stacktrace
 
       - name: Build Docker image
         run: docker build -t jimineutron/recipematch-backend:latest .

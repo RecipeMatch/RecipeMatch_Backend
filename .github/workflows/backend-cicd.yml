@@ -17,6 +17,14 @@ jobs:
           touch ./.env
           echo "${{ secrets.DOCKER_ENV }}" > ./.env
 
+      - name: Setup MySQL
+        uses: samin/mysql-action@v1
+        with:
+          character set server: 'utf8' 
+          mysql database: ${{ secrets.MYSQL_DATABASE }} 
+          mysql user: ${{ secrets.MYSQL_USERNAME }}
+          mysql password: ${{ secrets.MYSQL_PASSWORD }}
+          
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:

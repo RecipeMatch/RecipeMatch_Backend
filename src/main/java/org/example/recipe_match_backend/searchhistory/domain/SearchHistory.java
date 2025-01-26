@@ -2,6 +2,7 @@ package org.example.recipe_match_backend.searchhistory.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.recipe_match_backend.global.entity.BaseEntity;
 import org.example.recipe_match_backend.recipe.domain.Recipe;
 import org.example.recipe_match_backend.type.CategoryType;
 import org.example.recipe_match_backend.user.domain.User;
@@ -11,7 +12,7 @@ import org.example.recipe_match_backend.user.domain.User;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Entity
-public class SearchHistory {
+public class SearchHistory extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

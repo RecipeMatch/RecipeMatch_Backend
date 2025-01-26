@@ -3,6 +3,8 @@ package org.example.recipe_match_backend.recipe.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.recipe_match_backend.global.entity.BaseEntity;
+import org.example.recipe_match_backend.type.CategoryType;
+import org.example.recipe_match_backend.type.DifficultyType;
 import org.example.recipe_match_backend.user.domain.User;
 
 import java.util.ArrayList;

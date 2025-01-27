@@ -19,6 +19,7 @@ public class Tool {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String toolName;
 
     @OneToMany(mappedBy = "tool", cascade = CascadeType.PERSIST)

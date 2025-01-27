@@ -10,6 +10,7 @@ import org.example.recipe_match_backend.tool.domain.Tool;
 import org.example.recipe_match_backend.tool.repository.ToolRepository;
 import org.example.recipe_match_backend.user.domain.User;
 import org.example.recipe_match_backend.user.repository.UserRepository;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +33,24 @@ public class RecipeService {
     @Transactional
     public void save(RecipeDto recipeDto,Long userId){
 
-        //재료와 도구 추가하기(중복되지 않도록)
+        //재료와 도구 추가
+        List<RecipeIngredientDto> recipeIngredientDtos = recipeDto.getRecipeIngredientDtos();
+        for(RecipeIngredientDto recipeIngredientDto: recipeIngredientDtos){
+            Ingredient ingredient = Ingredient.builder().ingredientName(recipeIngredientDto.getIngredientName()).build();
+            try{
+                ingredientRepository.save(ingredient);
+            }catch (DataIntegrityViolationException e){
+                throw new IllegalArgumentException("이미 존재하는 데이터입니다.");
+            }
+        }
+        for(String toolName: recipeDto.getToolName()){
+            Tool tool = Tool.builder().toolName(toolName).build();
+            try{
+                toolRepository.save(tool);
+            }catch (DataIntegrityViolationException e){
+                throw new IllegalArgumentException("이미 존재하는 데이터입니다.");
+            }
+        }
 
         User user = userRepository.findById(userId).get();//사용자 검색
 

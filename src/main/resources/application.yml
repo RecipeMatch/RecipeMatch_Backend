@@ -22,3 +22,7 @@ logging:
 
 server:
   port: 8080
+
+firebase:
+  config:
+    path: "src/main/resources/firebase-adminsdk.json"

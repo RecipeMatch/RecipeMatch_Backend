@@ -7,6 +7,7 @@ import org.example.recipe_match_backend.ingredient.domain.Ingredient;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Entity
 public class RecipeIngredient {
 
@@ -22,5 +23,5 @@ public class RecipeIngredient {
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
 
-    private String quantity;
+    private String quantity;//g이나 개수일수 있기에 문자열
 }

@@ -1,6 +1,6 @@
 # 환경 변수 파일
 .env
-firebase.json
+src/main/resources/firebase.json
 
 # 로그 파일
 logs/

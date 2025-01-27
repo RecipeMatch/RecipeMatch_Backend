@@ -1,6 +1,8 @@
 package org.example.recipe_match_backend.recipe.service;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
+import org.example.recipe_match_backend.ingredient.domain.Ingredient;
 import org.example.recipe_match_backend.ingredient.repository.IngredientRepository;
 import org.example.recipe_match_backend.recipe.domain.*;
 import org.example.recipe_match_backend.recipe.repository.RecipeRepository;
@@ -30,6 +32,8 @@ public class RecipeService {
     @Transactional
     public void save(RecipeDto recipeDto,Long userId){
 
+        //재료와 도구 추가하기(중복되지 않도록)
+
         User user = userRepository.findById(userId).get();//사용자 검색
 
         Recipe recipe = Recipe.builder().recipeName(recipeDto.getRecipeName()).description(recipeDto.getDescription())
@@ -41,6 +45,7 @@ public class RecipeService {
             Tool tool = toolRepository.findByToolName(toolName);
             RecipeTool recipeTool = RecipeTool.builder().tool(tool).recipe(recipe).build();
             recipeTools.add(recipeTool);
+            tool.addRecipeTool(recipeTool);
         }//입력받은 요리도구를 데이터베이스에서 찾아 연관관계 주입 후 List로 바꾸어 레시피 엔티티에 주입 준비
 
         List<RecipeStep> recipeSteps = recipeDto.getRecipeStepDtos().stream().map(s -> RecipeStep.builder()
@@ -53,6 +58,11 @@ public class RecipeService {
                 .ingredient(ingredientRepository.findByIngredientName(i.getIngredientName()))
                 .build()).collect(toList());
         //RecipeIngredientDto를 ecipeIngredient엔티티에 매핑하여 List 형변환
+
+        for(RecipeIngredient recipeIngredient: recipeIngredients){
+            Ingredient ingredient = recipeIngredient.getIngredient();
+            ingredient.addRecipeIngredient(recipeIngredient);
+        }
 
         Recipe finalRecipe = recipe.toBuilder().recipeSteps(recipeSteps).recipeIngredients(recipeIngredients).recipeTools(recipeTools).build();
         //마지막으로 레시피 엔티티에 각 엔티티 리스트 주입

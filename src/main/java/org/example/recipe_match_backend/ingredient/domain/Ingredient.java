@@ -3,6 +3,7 @@ package org.example.recipe_match_backend.ingredient.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.recipe_match_backend.recipe.domain.RecipeIngredient;
+import org.example.recipe_match_backend.recipe.domain.RecipeTool;
 import org.example.recipe_match_backend.user.domain.UserIngredient;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Entity
 public class Ingredient {
 
@@ -25,5 +27,9 @@ public class Ingredient {
 
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.PERSIST)
     private List<UserIngredient> userIngredients = new ArrayList<>();
+
+    public void addRecipeIngredient(RecipeIngredient recipeIngredient) {
+        this.recipeIngredients.add(recipeIngredient);
+    }
 
 }

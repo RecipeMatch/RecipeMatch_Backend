@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Entity
 public class Tool {
 
@@ -25,5 +26,9 @@ public class Tool {
 
     @OneToMany(mappedBy = "tool", cascade = CascadeType.PERSIST)
     private List<UserTool> userTools = new ArrayList<>();
+
+    public void addRecipeTool(RecipeTool recipeTool) {
+        this.recipeTools.add(recipeTool);
+    }
 
 }

@@ -33,7 +33,7 @@ jobs:
         with:
           name: "emptyAdminSDK.json"
           json: ${{ secrets.FIREBASE }}
-          dir: 'src/main/resources/firebase-adminsdk.json/'
+          dir: 'src/main/resources/'
 
       - name: Set up JDK
         uses: actions/setup-java@v3

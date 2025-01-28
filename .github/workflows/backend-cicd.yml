@@ -32,9 +32,17 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
+        env:
+          MYSQL_URL: ${{ secrets.MYSQL_URL }}
+          MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
         run: ./gradlew build
 
       - name: Test with Gradle
+        env:
+          MYSQL_URL: ${{ secrets.MYSQL_URL }}
+          MYSQL_USERNAME: ${{ secrets.MYSQL_USERNAME }}
+          MYSQL_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
         run: ./gradlew test
 
       - name: Build Docker image

@@ -5,6 +5,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import lombok.extern.slf4j.Slf4j;
+import org.example.recipe_match_backend.global.exception.login.FirebaseUnAuthorization;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +35,7 @@ public class FirebaseConfig {
         try {
             return FirebaseAuth.getInstance(firebaseApp());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FirebaseUnAuthorization();
         }
     }
 

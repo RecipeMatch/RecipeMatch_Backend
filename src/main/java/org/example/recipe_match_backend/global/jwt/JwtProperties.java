@@ -11,8 +11,8 @@ public class JwtProperties {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private Long accessToken = 3 * 60 * 60 * 1000L;         // 3시간
+    private final Long accessToken = 3 * 60 * 60 * 1000L;         // 3시간
 
-    private Long refreshToken = 14 * 24 * 60 * 60 * 1000L;  // 2주
+    private final Long refreshToken = 14 * 24 * 60 * 60 * 1000L;  // 2주
 
 }

@@ -31,7 +31,7 @@ jobs:
         id: create-json
         uses: jsdaniell/create-json@v1.2.2
         with:
-          name: "emptyAdminSDK.json"
+          name: "firebase-adminsdk.json"
           json: ${{ secrets.FIREBASE }}
           dir: 'src/main/resources/'
 

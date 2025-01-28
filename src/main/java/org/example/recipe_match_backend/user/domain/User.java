@@ -25,7 +25,7 @@ public class User extends BaseEntity {
     private String googleUid;
 
     @Column(nullable = false, unique = true)
-    private String email;
+    private String name;
 
     private String nickname;
 

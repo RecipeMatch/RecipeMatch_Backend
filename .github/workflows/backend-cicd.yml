@@ -22,6 +22,16 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
 
+      - name: Make Docker Env
+        run: |
+            touch ./.env
+            echo "${{ secrets.DOCKER_ENV }}" > ./.env
+
+      - name: Make firebase sdk admin
+        run: |
+          touch ./src/main/resources/firebase-adminsdk.json
+          echo "${{ secrets.FIREBASE }}" > ./src/main/resources/firebase-adminsdk.json
+
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:

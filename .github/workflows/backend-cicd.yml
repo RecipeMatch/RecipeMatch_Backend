@@ -28,9 +28,12 @@ jobs:
             echo "${{ secrets.DOCKER_ENV }}" > ./.env
 
       - name: Make firebase sdk admin
-        run: |
-          touch ./src/main/resources/firebase-adminsdk.json
-          echo "${{ secrets.FIREBASE }}" > ./src/main/resources/firebase-adminsdk.json
+        id: create-json
+        uses: jsdaniell/create-json@v1.2.2
+        with:
+          name: "emptyAdminSDK.json"
+          json: ${{ secrets.FIREBASE }}
+          dir: 'src/main/resources/firebase-adminsdk.json/'
 
       - name: Set up JDK
         uses: actions/setup-java@v3

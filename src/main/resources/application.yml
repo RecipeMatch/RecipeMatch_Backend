@@ -29,3 +29,8 @@ firebase:
 
 jwt:
   secret: ${JWT_SECRET}
+  expiration:
+    accessToken: 10800000
+    refreshToken: 1209600000
+
+

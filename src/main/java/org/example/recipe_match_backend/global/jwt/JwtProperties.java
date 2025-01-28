@@ -9,10 +9,11 @@ import org.springframework.stereotype.Component;
 public class JwtProperties {
 
     @Value("${jwt.secret}")
-    private String secretKey;
+    private String secretKey;  // base64 인코딩된 비밀키라고 가정
 
-    private final Long accessToken = 3 * 60 * 60 * 1000L;         // 3시간
+    @Value("${jwt.expiration.accessToken}")
+    private long accessTokenExpiration;  // 3시간 -> 10800000
 
-    private final Long refreshToken = 14 * 24 * 60 * 60 * 1000L;  // 2주
-
+    @Value("${jwt.expiration.refreshToken}")
+    private long refreshTokenExpiration; // 14일 -> 1209600000
 }

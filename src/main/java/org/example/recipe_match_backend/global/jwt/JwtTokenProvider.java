@@ -22,8 +22,7 @@ public class JwtTokenProvider implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         // 만약 secretKey가 Base64 인코딩 문자열이면 decode해서 Key 객체를 만든다
-        byte[] keyBytes = Decoders.BASE64.decode(jwtProperties.getSecretKey());
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.getSecretKey()));
     }
 
     /**

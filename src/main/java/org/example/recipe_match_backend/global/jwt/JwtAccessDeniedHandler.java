@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-/*
+/**
  * 권한이 없는 사용자가 보호된 자원에 액세스하려 할 때 처리 방법
  */
 @Component

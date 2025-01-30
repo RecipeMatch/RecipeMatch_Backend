@@ -10,6 +10,7 @@ import org.example.recipe_match_backend.user.domain.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @AllArgsConstructor
@@ -63,5 +64,32 @@ public class Recipe extends BaseEntity {
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
     private List<SearchHistory> searchHistories = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Recipe recipe = (Recipe) o;
+        return Objects.equals(id, recipe.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    public void addRecipeIngredient(RecipeIngredient recipeIngredient) {
+        recipeIngredients.add(recipeIngredient);
+        recipeIngredient.setRecipe(this);
+    }
+
+    public void addRecipeTool(RecipeTool recipeTool) {
+        recipeTools.add(recipeTool);
+        recipeTool.setRecipe(this);
+    }
+
+    public void addRecipeStep(RecipeStep recipeStep) {
+        recipeSteps.add(recipeStep);
+        recipeStep.setRecipe(this);
+    }
 
 }

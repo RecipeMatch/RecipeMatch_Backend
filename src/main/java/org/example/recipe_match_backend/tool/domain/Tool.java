@@ -22,7 +22,7 @@ public class Tool {
     @Column(unique = true)
     private String toolName;
 
-    @OneToMany(mappedBy = "tool", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "tool", cascade = CascadeType.PERSIST,orphanRemoval = true)
     private List<RecipeTool> recipeTools = new ArrayList<>();
 
     @OneToMany(mappedBy = "tool", cascade = CascadeType.PERSIST)
@@ -33,3 +33,4 @@ public class Tool {
     }
 
 }
+

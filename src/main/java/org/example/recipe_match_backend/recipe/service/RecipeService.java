@@ -1,6 +1,7 @@
 package org.example.recipe_match_backend.recipe.service;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -28,87 +31,98 @@ import static java.util.stream.Collectors.toList;
 @Transactional(readOnly = true)
 public class RecipeService {
 
-    private final EntityManager entityManager;
     private final RecipeRepository recipeRepository;
     private final UserRepository userRepository;
     private final ToolRepository toolRepository;
     private final IngredientRepository ingredientRepository;
 
     @Transactional
-    public Long save(RecipeDto recipeDto,Long userId){
+    public Long save(RecipeDto recipeDto, Long userId) {
+        // 사용자 조회
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        //재료와 도구 추가
-        List<RecipeIngredientDto> recipeIngredientDtos = recipeDto.getRecipeIngredientDtos();
-        for(RecipeIngredientDto recipeIngredientDto: recipeIngredientDtos){
-            Ingredient ingredient = Ingredient.builder()
-                    .ingredientName(recipeIngredientDto.getIngredientName())
-                    .recipeIngredients(new ArrayList<>())
-                    .userIngredients(new ArrayList<>())
-                    .build();
-            try{
-                ingredientRepository.save(ingredient);
-            }catch (DataIntegrityViolationException e){
-                log.trace("이미 존재하는 데이터입니다.");
-            }
-        }
-        for(String toolName: recipeDto.getToolName()){
-            Tool tool = Tool.builder().toolName(toolName)
-                    .recipeTools(new ArrayList<>())
-                    .userTools(new ArrayList<>())
-                    .build();
-            try{
-                toolRepository.save(tool);
-            }catch (DataIntegrityViolationException e){
-                log.trace("이미 존재하는 데이터입니다.");
-            }
-        }
+        // Recipe 엔티티 생성
+        Recipe recipe = Recipe.builder()
+                .recipeName(recipeDto.getRecipeName())
+                .description(recipeDto.getDescription())
+                .cookingTime(recipeDto.getCookingTime())
+                .difficulty(recipeDto.getDifficulty())
+                .category(recipeDto.getCategory())
+                .recipeIngredients(new ArrayList<>())
+                .recipeSteps(new ArrayList<>())
+                .recipeTools(new ArrayList<>())
+                .user(user)
+                .build();
 
-        Recipe recipe = Recipe.builder().recipeName(recipeDto.getRecipeName()).description(recipeDto.getDescription())
-                .cookingTime(recipeDto.getCookingTime()).difficulty(recipeDto.getDifficulty()).category(recipeDto.getCategory())
-                .build();//레시피 DTO를 레시피 엔티티로 매핑
-
-        User user = userRepository.findById(userId).get();//사용자 검색
-
-        //유저에 레시피 연관관계 주입
+        // 사용자와 레시피 관계 설정
         user.addRecipe(recipe);
 
-        List<RecipeTool> recipeTools = new ArrayList<>();
-        for(String toolName: recipeDto.getToolName()){
-            Tool tool = toolRepository.findByToolName(toolName);
-            RecipeTool recipeTool = RecipeTool.builder().tool(tool).recipe(recipe).build();
-            recipeTools.add(recipeTool);
-            tool.addRecipeTool(recipeTool);
-        }//입력받은 요리도구를 데이터베이스에서 찾아 연관관계 주입 후 List로 바꾸어 레시피 엔티티에 주입 준비
+        // Ingredients 처리
+        for (RecipeIngredientDto dto : recipeDto.getRecipeIngredientDtos()) {
+            // 기존 Ingredient 조회 또는 새로 생성
+            Ingredient ingredient = ingredientRepository.findByIngredientName(dto.getIngredientName())
+                    .orElseGet(() -> {
+                        Ingredient newIngredient = Ingredient.builder()
+                                .ingredientName(dto.getIngredientName())
+                                .recipeIngredients(new ArrayList<>())
+                                .userIngredients(new ArrayList<>())
+                                .build();
+                        return ingredientRepository.save(newIngredient);
+                    });
 
-        List<RecipeStep> recipeSteps = recipeDto.getRecipeStepDtos().stream().map(s -> RecipeStep.builder()
-                .stepOrder(s.getStepOrder()).content(s.getContent()).recipe(recipe)
-                .build()).collect(toList());
-        //RecipeStepDto를 RecipeStep엔티티에 매핑하여 List 형변환
+            // RecipeIngredient 생성
+            RecipeIngredient recipeIngredient = RecipeIngredient.builder()
+                    .quantity(dto.getQuantity())
+                    .ingredient(ingredient)
+                    .build();
 
-        List<RecipeIngredient> recipeIngredients = recipeDto.getRecipeIngredientDtos().stream().map(i -> RecipeIngredient
-                .builder().quantity(i.getQuantity()).recipe(recipe)
-                .ingredient(ingredientRepository.findByIngredientName(i.getIngredientName()))
-                .build()).collect(toList());
-        //RecipeIngredientDto를 ecipeIngredient엔티티에 매핑하여 List 형변환
-
-        for(RecipeIngredient recipeIngredient: recipeIngredients){
-            Ingredient ingredient = recipeIngredient.getIngredient();
+            // 양방향 관계 설정
+            recipe.addRecipeIngredient(recipeIngredient);
             ingredient.addRecipeIngredient(recipeIngredient);
         }
 
-        Recipe finalRecipe = recipe.toBuilder().recipeSteps(recipeSteps)
-                .recipeIngredients(recipeIngredients).recipeTools(recipeTools).user(user)
-                .build();
-        //마지막으로 레시피 엔티티에 각 엔티티 리스트 주입
 
-        for (RecipeStep step : recipeSteps) {
-            entityManager.persist(step);
-        }//왜 수동으로 영속화 해야 null값이 안되는거지?
+        // Tools 처리
+        for (String toolName : recipeDto.getToolName()) {
+            Tool tool = toolRepository.findByToolName(toolName)
+                    .orElseGet(() -> {
+                        Tool newTool = Tool.builder()
+                                .toolName(toolName)
+                                .recipeTools(new ArrayList<>())
+                                .userTools(new ArrayList<>())
+                                .build();
+                        return toolRepository.save(newTool);
+                    });
 
-        Recipe saveRecipe = recipeRepository.save(finalRecipe);
+            // RecipeTool 생성
+            RecipeTool recipeTool = RecipeTool.builder()
+                    .tool(tool)
+                    .build();
 
-        return finalRecipe.getId();
+            // 양방향 관계 설정
+            recipe.addRecipeTool(recipeTool);
+            tool.addRecipeTool(recipeTool);
+        }
+
+        // RecipeSteps 처리
+        for (RecipeStepDto stepDto : recipeDto.getRecipeStepDtos()) {
+            RecipeStep step = RecipeStep.builder()
+                    .stepOrder(stepDto.getStepOrder())
+                    .content(stepDto.getContent())
+                    .build();
+            recipe.addRecipeStep(step);
+        }
+
+        // Recipe 저장 (CascadeType.PERSIST에 의해 연관된 엔티티들도 함께 저장됨)
+        Recipe savedRecipe = recipeRepository.save(recipe);
+
+        return savedRecipe.getId();
     }
+
+
+
+
 
     @Transactional
     public void update(Long recipeId,RecipeDto recipeDto){
@@ -151,7 +165,7 @@ public class RecipeService {
             //수정된 toolName으로 Tool 탐색 후 RecipeTool에 입력
             List<RecipeTool> recipeTools = new ArrayList<>();
             for(String toolName:recipeDto.getToolName()){
-                Tool tool = toolRepository.findByToolName(toolName);
+                Tool tool = toolRepository.findByToolName(toolName).get();
                 RecipeTool recipeTool = RecipeTool.builder()
                         .tool(tool)
                         .recipe(recipe)
@@ -181,8 +195,10 @@ public class RecipeService {
 
             //수정된 재료 입력
             List<RecipeIngredient> recipeIngredients = recipeDto.getRecipeIngredientDtos().stream().map(i -> RecipeIngredient
-                    .builder().quantity(i.getQuantity()).recipe(recipe)
-                    .ingredient(ingredientRepository.findByIngredientName(i.getIngredientName()))
+                    .builder()
+                    .quantity(i.getQuantity())
+                    .recipe(recipe)
+                    .ingredient(ingredientRepository.findByIngredientName(i.getIngredientName()).get())
                     .build()).collect(toList());
 
             //recipeIngredient와 Ingredient의 연관관계 생성
@@ -193,8 +209,10 @@ public class RecipeService {
             updateRecipe.recipeIngredients(recipeIngredients);
         }
         if(recipeDto.getRecipeStepDtos() != null){
-            List<RecipeStep> recipeSteps = recipeDto.getRecipeStepDtos().stream().map(s -> RecipeStep.builder()
-                    .stepOrder(s.getStepOrder()).content(s.getContent()).recipe(recipe)
+            List<RecipeStep> recipeSteps = recipeDto.getRecipeStepDtos().stream().map(s -> RecipeStep
+                    .builder()
+                    .stepOrder(s.getStepOrder())
+                    .content(s.getContent()).recipe(recipe)
                     .build()).collect(toList());
             updateRecipe.recipeSteps(recipeSteps);
         }

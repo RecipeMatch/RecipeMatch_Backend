@@ -23,7 +23,7 @@ public class Ingredient {
     @Column(unique = true)
     private String ingredientName;
 
-    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.PERSIST,orphanRemoval = true)
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.PERSIST)

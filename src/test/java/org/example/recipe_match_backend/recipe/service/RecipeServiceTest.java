@@ -28,25 +28,34 @@ public class RecipeServiceTest {
     @Test
     public void testSave() throws Exception{
 
-        RecipeIngredientDto recipeIngredientDto = new RecipeIngredientDto("테스트", "반복 테스트15");
+        String test = "반복 테스트 38";
+
+        RecipeIngredientDto recipeIngredientDto = new RecipeIngredientDto("테스트", test);
         List<RecipeIngredientDto> recipeIngredientDtos = new ArrayList<>();
         recipeIngredientDtos.add(recipeIngredientDto);
 
-        RecipeStepDto recipeStepDto = new RecipeStepDto(3,"테스트15");
+        RecipeStepDto recipeStepDto = new RecipeStepDto(3,test);
         List<RecipeStepDto> recipeStepDtos = new ArrayList<>();
         recipeStepDtos.add(recipeStepDto);
 
         List<String> toolName = new ArrayList<>();
-        toolName.add("반복 테스트15");
+        toolName.add(test);
 
-        RecipeDto recipeDto = RecipeDto.builder().recipeName("반복 테스트15").category(CategoryType.양식)
-                .difficulty(DifficultyType.중간).cookingTime(10).description("테스트 입니다")
-                .recipeIngredientDtos(recipeIngredientDtos).recipeStepDtos(recipeStepDtos).toolName(toolName)
+        RecipeDto recipeDto = RecipeDto
+                .builder()
+                .recipeName(test)
+                .category(CategoryType.양식)
+                .difficulty(DifficultyType.중간)
+                .cookingTime(10)
+                .description("테스트 입니다")
+                .recipeIngredientDtos(recipeIngredientDtos)
+                .recipeStepDtos(recipeStepDtos)
+                .toolName(toolName)
                 .build();
 
         Long id = recipeService.save(recipeDto,1L);
 
-        //안되는거: 중복되는 tool,ingredient 처리 안됨, insert 두번씩 됨
+        //안되는거: 중복되는 tool,ingredient 처리 안됨, insert 두번씩 됨(save를 여러번 해서 두번씩 됨), recipestep,recipetool null값
     }
 
     @Test

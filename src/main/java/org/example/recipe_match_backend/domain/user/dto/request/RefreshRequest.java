@@ -5,10 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
-public class UserSignUp {
-    private String name;
-    private String phoneNumber;
+@AllArgsConstructor
+public class RefreshRequest {
+
+    private String refreshToken;
 
 }

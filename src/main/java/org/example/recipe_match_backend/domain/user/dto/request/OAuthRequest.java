@@ -8,5 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OAuthRequest {
-    private String uid;
+
+    private String idToken;
+    private String name;
+
 }

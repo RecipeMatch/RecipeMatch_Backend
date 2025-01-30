@@ -27,8 +27,6 @@ public class User extends BaseEntity {
 
     private String name;
 
-    private String phoneNumber;
-
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Recipe> recipes = new ArrayList<>();
@@ -72,4 +70,8 @@ public class User extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<UserIngredient> userIngredients = new ArrayList<>();
+
+    public void changeName(String newName){
+        this.name = newName;
+    }
 }

@@ -3,19 +3,20 @@ package org.example.recipe_match_backend.recipe.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.example.recipe_match_backend.type.CategoryType;
 import org.example.recipe_match_backend.type.DifficultyType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Slf4j
+@Builder
 @Getter
 public class RecipeDto {
 
@@ -23,17 +24,17 @@ public class RecipeDto {
 
     private String description;//Recipe
 
-    private int cookingTime;//Recipe
+    private Integer cookingTime;//Recipe
 
     private DifficultyType difficulty;//Recipe
 
     private CategoryType category;//Recipe
 
-    private List<RecipeIngredientDto> recipeIngredientDtos;//RecipeIngredient
+    private List<RecipeIngredientDto> recipeIngredientDtos = new ArrayList<>();//RecipeIngredient
 
-    private List<RecipeStepDto> recipeStepDtos;//RecipeStep
+    private List<RecipeStepDto> recipeStepDtos = new ArrayList<>();//RecipeStep
 
-    private List<String> toolName;//RecipeTool
+    private List<String> toolName = new ArrayList<>();//RecipeTool
 
     public RecipeDto(Recipe recipe){
         this.recipeName = recipe.getRecipeName();

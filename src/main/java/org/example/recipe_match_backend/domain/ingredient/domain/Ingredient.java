@@ -24,7 +24,6 @@ public class Ingredient {
     private String ingredientName;
 
     @OneToMany(mappedBy = "ingredient")
-
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.PERSIST)

@@ -6,7 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.recipe_match_backend.domain.ingredient.domain.Ingredient;
 import org.example.recipe_match_backend.domain.ingredient.repository.IngredientRepository;
 import org.example.recipe_match_backend.domain.recipe.domain.*;
-import org.example.recipe_match_backend.recipe.domain.*;
+import org.example.recipe_match_backend.domain.recipe.dto.RecipeIngredientDto;
+import org.example.recipe_match_backend.domain.recipe.dto.RecipeStepDto;
+import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeResponse;
 import org.example.recipe_match_backend.domain.recipe.repository.RecipeRepository;
 import org.example.recipe_match_backend.domain.tool.domain.Tool;
 import org.example.recipe_match_backend.domain.tool.repository.ToolRepository;
@@ -32,18 +35,18 @@ public class RecipeService {
     private final IngredientRepository ingredientRepository;
 
     @Transactional
-    public Long save(RecipeDto recipeDto, Long userId) {
+    public Long save(RecipeRequest recipeRequest, Long userId) {
         // 사용자 조회
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         // Recipe 엔티티 생성
         Recipe recipe = Recipe.builder()
-                .recipeName(recipeDto.getRecipeName())
-                .description(recipeDto.getDescription())
-                .cookingTime(recipeDto.getCookingTime())
-                .difficulty(recipeDto.getDifficulty())
-                .category(recipeDto.getCategory())
+                .recipeName(recipeRequest.getRecipeName())
+                .description(recipeRequest.getDescription())
+                .cookingTime(recipeRequest.getCookingTime())
+                .difficulty(recipeRequest.getDifficulty())
+                .category(recipeRequest.getCategory())
                 .recipeIngredients(new ArrayList<>())
                 .recipeSteps(new ArrayList<>())
                 .recipeTools(new ArrayList<>())
@@ -54,7 +57,7 @@ public class RecipeService {
         user.addRecipe(recipe);
 
         // Ingredients 처리
-        for (RecipeIngredientDto dto : recipeDto.getRecipeIngredientDtos()) {
+        for (RecipeIngredientDto dto : recipeRequest.getRecipeIngredientDtos()) {
             // 기존 Ingredient 조회 또는 새로 생성
             Ingredient ingredient = ingredientRepository.findByIngredientName(dto.getIngredientName())
                     .orElseGet(() -> {
@@ -79,7 +82,7 @@ public class RecipeService {
 
 
         // Tools 처리
-        for (String toolName : recipeDto.getToolName()) {
+        for (String toolName : recipeRequest.getToolName()) {
             Tool tool = toolRepository.findByToolName(toolName)
                     .orElseGet(() -> {
                         Tool newTool = Tool.builder()
@@ -101,7 +104,7 @@ public class RecipeService {
         }
 
         // RecipeSteps 처리
-        for (RecipeStepDto stepDto : recipeDto.getRecipeStepDtos()) {
+        for (RecipeStepDto stepDto : recipeRequest.getRecipeStepDtos()) {
             RecipeStep step = RecipeStep.builder()
                     .stepOrder(stepDto.getStepOrder())
                     .content(stepDto.getContent())
@@ -116,30 +119,30 @@ public class RecipeService {
     }
 
     @Transactional
-    public Long update(Long recipeId,RecipeDto recipeDto){
+    public Long update(Long recipeId, RecipeRequest recipeRequest){
 
         Recipe recipe = recipeRepository.findById(recipeId).get();
 
         //null체크
-        if(recipeDto.getRecipeName() != null){
-            recipe.setRecipeName(recipeDto.getRecipeName());
+        if(recipeRequest.getRecipeName() != null){
+            recipe.setRecipeName(recipeRequest.getRecipeName());
         }
-        if(recipeDto.getCategory() != null){
-            recipe.setCategory(recipeDto.getCategory());
+        if(recipeRequest.getCategory() != null){
+            recipe.setCategory(recipeRequest.getCategory());
         }
-        if(recipeDto.getDifficulty() != null){
-            recipe.setDifficulty(recipeDto.getDifficulty());
+        if(recipeRequest.getDifficulty() != null){
+            recipe.setDifficulty(recipeRequest.getDifficulty());
         }
-        if(recipeDto.getDescription() != null){
-            recipe.setDescription(recipeDto.getDescription());
+        if(recipeRequest.getDescription() != null){
+            recipe.setDescription(recipeRequest.getDescription());
         }
-        if(recipeDto.getCookingTime() != null){
-            recipe.setCookingTime(recipeDto.getCookingTime());
+        if(recipeRequest.getCookingTime() != null){
+            recipe.setCookingTime(recipeRequest.getCookingTime());
         }
-        if(recipeDto.getToolName() != null){
+        if(recipeRequest.getToolName() != null){
 
             //수정된 toolName db에 저장(중복 제외)
-            for (String toolName : recipeDto.getToolName()) {
+            for (String toolName : recipeRequest.getToolName()) {
                 Tool tool = toolRepository.findByToolName(toolName)
                         .orElseGet(() -> {
                             Tool newTool = Tool.builder()
@@ -161,10 +164,10 @@ public class RecipeService {
             }
 
         }
-        if(recipeDto.getRecipeIngredientDtos() != null){
+        if(recipeRequest.getRecipeIngredientDtos() != null){
 
             //수정된 재료 db에 저장(중복 제외)
-            for (RecipeIngredientDto dto : recipeDto.getRecipeIngredientDtos()) {
+            for (RecipeIngredientDto dto : recipeRequest.getRecipeIngredientDtos()) {
                 // 기존 Ingredient 조회 또는 새로 생성
                 Ingredient ingredient = ingredientRepository.findByIngredientName(dto.getIngredientName())
                         .orElseGet(() -> {
@@ -187,7 +190,7 @@ public class RecipeService {
                 ingredient.addRecipeIngredient(recipeIngredient);//그러면 프론트에서 해당 재료의 id를 dto로 받고 지워버리기
             }
         }
-        for (RecipeStepDto stepDto : recipeDto.getRecipeStepDtos()) {
+        for (RecipeStepDto stepDto : recipeRequest.getRecipeStepDtos()) {
             RecipeStep step = RecipeStep.builder()
                     .stepOrder(stepDto.getStepOrder())
                     .content(stepDto.getContent())
@@ -205,14 +208,14 @@ public class RecipeService {
         recipeRepository.deleteById(recipeId);
     }
 
-    public RecipeDto find(Long recipeId){
+    public RecipeResponse find(Long recipeId){
         Recipe recipe = recipeRepository.findById(recipeId).get();
-        return new RecipeDto(recipe);
+        return new RecipeResponse(recipe);
     }
 
-    public List<RecipeDto> findAll(){
+    public List<RecipeResponse> findAll(){
         List<Recipe> recipes = recipeRepository.findAll();
-        return recipes.stream().map(r -> new RecipeDto(r)).collect(toList());
+        return recipes.stream().map(r -> new RecipeResponse(r)).collect(toList());
     }
 
 }

@@ -3,9 +3,10 @@ package org.example.recipe_match_backend.recipe.service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import org.example.recipe_match_backend.domain.recipe.domain.RecipeDto;
-import org.example.recipe_match_backend.domain.recipe.domain.RecipeIngredientDto;
-import org.example.recipe_match_backend.domain.recipe.domain.RecipeStepDto;
+import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.RecipeIngredientDto;
+import org.example.recipe_match_backend.domain.recipe.dto.RecipeStepDto;
+import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeResponse;
 import org.example.recipe_match_backend.domain.recipe.service.RecipeService;
 import org.example.recipe_match_backend.type.CategoryType;
 import org.example.recipe_match_backend.type.DifficultyType;
@@ -44,7 +45,7 @@ public class RecipeServiceTest {
         List<String> toolName = new ArrayList<>();
         toolName.add(test);
 
-        RecipeDto recipeDto = RecipeDto
+        RecipeRequest recipeRequest = RecipeRequest
                 .builder()
                 .recipeName("테스트3")
                 .category(CategoryType.양식)
@@ -56,14 +57,14 @@ public class RecipeServiceTest {
                 .toolName(toolName)
                 .build();
 
-        Long id = recipeService.save(recipeDto,1L);
+        Long id = recipeService.save(recipeRequest,1L);
     }
 
     @Test
     public void testFind() throws Exception{
-        RecipeDto findRecipe = recipeService.find(1L);
+        RecipeResponse findRecipe = recipeService.find(1L);
         assertThat(findRecipe.getRecipeName()).isEqualTo("반복 테스트 1");
-        List<RecipeDto> findAllRecipe = recipeService.findAll();
+        List<RecipeResponse> findAllRecipe = recipeService.findAll();
         assertThat(findAllRecipe.getFirst().getRecipeName()).isEqualTo("반복 테스트 1");
     }
 
@@ -82,7 +83,7 @@ public class RecipeServiceTest {
         List<String> toolName = new ArrayList<>();
         toolName.add(test);
 
-        RecipeDto recipeDto = RecipeDto
+        RecipeRequest recipeRequest = RecipeRequest
                 .builder()
                 .recipeName("수정 테스트")
                 .category(CategoryType.일식)
@@ -94,7 +95,7 @@ public class RecipeServiceTest {
                 .toolName(toolName)
                 .build();
 
-        recipeService.update(1L, recipeDto);
+        recipeService.update(1L, recipeRequest);
 
         em.flush();
     }

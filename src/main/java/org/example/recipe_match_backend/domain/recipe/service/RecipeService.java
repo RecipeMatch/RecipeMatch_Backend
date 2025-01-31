@@ -45,7 +45,6 @@ public class RecipeService {
                 .recipeName(recipeRequest.getRecipeName())
                 .description(recipeRequest.getDescription())
                 .cookingTime(recipeRequest.getCookingTime())
-                .difficulty(recipeRequest.getDifficulty())
                 .category(recipeRequest.getCategory())
                 .recipeIngredients(new ArrayList<>())
                 .recipeSteps(new ArrayList<>())
@@ -129,9 +128,6 @@ public class RecipeService {
         }
         if(recipeRequest.getCategory() != null){
             recipe.setCategory(recipeRequest.getCategory());
-        }
-        if(recipeRequest.getDifficulty() != null){
-            recipe.setDifficulty(recipeRequest.getDifficulty());
         }
         if(recipeRequest.getDescription() != null){
             recipe.setDescription(recipeRequest.getDescription());

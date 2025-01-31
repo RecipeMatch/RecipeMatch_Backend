@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+
 @Entity
 public class Ingredient {
 
@@ -23,6 +24,7 @@ public class Ingredient {
     private String ingredientName;
 
     @OneToMany(mappedBy = "ingredient")
+
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.PERSIST)
@@ -31,5 +33,4 @@ public class Ingredient {
     public void addRecipeIngredient(RecipeIngredient recipeIngredient) {
         this.recipeIngredients.add(recipeIngredient);
     }
-
 }

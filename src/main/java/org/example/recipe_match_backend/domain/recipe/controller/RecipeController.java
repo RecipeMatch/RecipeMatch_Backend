@@ -41,6 +41,4 @@ public class RecipeController {
     public void delete(@RequestParam Long recipeId){
         recipeService.delete(recipeId);
     }
-
-
 }

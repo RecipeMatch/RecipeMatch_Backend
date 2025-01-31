@@ -36,4 +36,5 @@ public class RecipeLike extends BaseEntity {
     public int hashCode() {
         return Objects.hashCode(id);
     }
+
 }

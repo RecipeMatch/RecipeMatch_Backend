@@ -1,5 +1,6 @@
 package org.example.recipe_match_backend.domain.ingredient.repository;
 
+
 import org.example.recipe_match_backend.domain.ingredient.domain.Ingredient;
 import org.springframework.data.jpa.repository.JpaRepository;
 

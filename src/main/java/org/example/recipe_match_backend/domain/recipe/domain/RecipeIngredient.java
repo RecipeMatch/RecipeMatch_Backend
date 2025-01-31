@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.example.recipe_match_backend.domain.ingredient.domain.Ingredient;
 
+
 import java.util.Objects;
 
 @Getter
@@ -21,6 +22,7 @@ public class RecipeIngredient {
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
 
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -32,7 +34,7 @@ public class RecipeIngredient {
     public int hashCode() {
         return Objects.hashCode(id);
     }
-
+  
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ingredient_id")
     private Ingredient ingredient;
@@ -42,4 +44,5 @@ public class RecipeIngredient {
     public void setRecipe(Recipe recipe){
         this.recipe = recipe;
     }
+
 }

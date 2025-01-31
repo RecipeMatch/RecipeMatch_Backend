@@ -29,6 +29,7 @@ public class RecipeBookMark extends BaseEntity {
         return Objects.hashCode(id);
     }
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

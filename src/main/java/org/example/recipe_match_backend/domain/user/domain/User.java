@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 @Entity
 public class User extends BaseEntity {
 
@@ -25,45 +25,56 @@ public class User extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String googleUid;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    private String name;
 
-    private String nickname;
-
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Recipe> recipes = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<RecipeLike> recipeLikes = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<RecipeBookMark> recipeFavorites = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<RecipeComment> comments = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<RecipeRating> ratings = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<SearchHistory> searchHistories = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<Post> posts = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<PostComment> postComments = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<UserAllergy> userAllergies = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<UserTool> userTools = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<UserIngredient> userIngredients = new ArrayList<>();
 
-    public void addRecipe(Recipe recipe) {
-        this.recipes.add(recipe);
+    public void changeName(String newName){
+        this.name = newName;
     }
+      public void addRecipe(Recipe recipe) {
+        this.recipes.add(recipe);
+      }
 }

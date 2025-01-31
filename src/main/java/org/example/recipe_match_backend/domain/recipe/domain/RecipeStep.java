@@ -3,6 +3,7 @@ package org.example.recipe_match_backend.domain.recipe.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+
 import java.util.Objects;
 
 @Getter
@@ -40,5 +41,4 @@ public class RecipeStep {
     public void setRecipe(Recipe recipe){
         this.recipe = recipe;
     }
-
 }

@@ -44,6 +44,4 @@ public class RecipeTool {
     public void setTool(Tool tool){
         this.tool = tool;
     }
-
-
 }

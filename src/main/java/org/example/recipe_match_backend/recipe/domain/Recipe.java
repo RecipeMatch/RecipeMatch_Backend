@@ -41,13 +41,13 @@ public class Recipe extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;//사용자:레시피 입력시 필요한 내용
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<RecipeStep> recipeSteps = new ArrayList<>();//레시피 단계 및 내용:레시피 입력시 필요한 내용
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();//재료:레시피 입력시 필요한 내용
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<RecipeTool> recipeTools = new ArrayList<>();//도구:레시피 입력시 필요한 내용
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
@@ -78,13 +78,13 @@ public class Recipe extends BaseEntity {
     }
 
     public void addRecipeIngredient(RecipeIngredient recipeIngredient) {
-        recipeIngredients.add(recipeIngredient);
         recipeIngredient.setRecipe(this);
+        recipeIngredients.add(recipeIngredient);
     }
 
     public void addRecipeTool(RecipeTool recipeTool) {
-        recipeTools.add(recipeTool);
         recipeTool.setRecipe(this);
+        recipeTools.add(recipeTool);
     }
 
     public void addRecipeStep(RecipeStep recipeStep) {
@@ -92,4 +92,23 @@ public class Recipe extends BaseEntity {
         recipeStep.setRecipe(this);
     }
 
+    public void setRecipeName(String recipeName) {
+        this.recipeName = recipeName;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDifficulty(DifficultyType difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public void setCategory(CategoryType category) {
+        this.category = category;
+    }
+
+    public void setCookingTime(int cookingTime) {
+        this.cookingTime = cookingTime;
+    }
 }

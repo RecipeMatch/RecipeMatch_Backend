@@ -40,4 +40,10 @@ public class RecipeTool {
     public void setRecipe(Recipe recipe){
         this.recipe = recipe;
     }
+    
+    public void setTool(Tool tool){
+        this.tool = tool;
+    }
+
+
 }

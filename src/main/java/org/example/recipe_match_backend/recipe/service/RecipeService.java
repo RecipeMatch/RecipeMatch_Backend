@@ -125,99 +125,88 @@ public class RecipeService {
 
 
     @Transactional
-    public void update(Long recipeId,RecipeDto recipeDto){
-        Recipe recipe = recipeRepository.findById(recipeId).get();
+    public Long update(Long recipeId,RecipeDto recipeDto){
 
-        Recipe.RecipeBuilder updateRecipe = recipe.toBuilder();
+        Recipe recipe = recipeRepository.findById(recipeId).get();
 
         //null체크
         if(recipeDto.getRecipeName() != null){
-            updateRecipe.recipeName(recipeDto.getRecipeName());
+            recipe.setRecipeName(recipeDto.getRecipeName());
         }
         if(recipeDto.getCategory() != null){
-            updateRecipe.category(recipeDto.getCategory());
+            recipe.setCategory(recipeDto.getCategory());
         }
         if(recipeDto.getDifficulty() != null){
-            updateRecipe.difficulty(recipeDto.getDifficulty());
+            recipe.setDifficulty(recipeDto.getDifficulty());
         }
         if(recipeDto.getDescription() != null){
-            updateRecipe.description(recipeDto.getDescription());
+            recipe.setDescription(recipeDto.getDescription());
         }
         if(recipeDto.getCookingTime() != null){
-            updateRecipe.cookingTime(recipeDto.getCookingTime());
+            recipe.setCookingTime(recipeDto.getCookingTime());
         }
         if(recipeDto.getToolName() != null){
 
             //수정된 toolName db에 저장(중복 제외)
-            for(String toolName: recipeDto.getToolName()){
-                Tool tool = Tool.builder()
-                        .toolName(toolName)
-                        .userTools(new ArrayList<>())
-                        .recipeTools(new ArrayList<>())
-                        .build();
-                try{
-                    toolRepository.save(tool);
-                }catch (DataIntegrityViolationException e){
-                    log.trace("이미 존재하는 데이터입니다.");
-                }
-            }
+            for (String toolName : recipeDto.getToolName()) {
+                Tool tool = toolRepository.findByToolName(toolName)
+                        .orElseGet(() -> {
+                            Tool newTool = Tool.builder()
+                                    .toolName(toolName)
+                                    .recipeTools(new ArrayList<>())
+                                    .userTools(new ArrayList<>())
+                                    .build();
+                            return toolRepository.save(newTool);
+                        });
 
-            //수정된 toolName으로 Tool 탐색 후 RecipeTool에 입력
-            List<RecipeTool> recipeTools = new ArrayList<>();
-            for(String toolName:recipeDto.getToolName()){
-                Tool tool = toolRepository.findByToolName(toolName).get();
+                // RecipeTool 생성
                 RecipeTool recipeTool = RecipeTool.builder()
                         .tool(tool)
-                        .recipe(recipe)
                         .build();
-                recipeTools.add(recipeTool);
-                tool.addRecipeTool(recipeTool);
+
+                // 양방향 관계 설정
+                recipe.addRecipeTool(recipeTool);//문제는 이러면 추가만 가능하고 기존의 도구는 안사라짐
+                tool.addRecipeTool(recipeTool);//그러면 프론트에서 해당 도구의 id를 dto로 받고 지워버리기
             }
-            updateRecipe.recipeTools(recipeTools);
 
         }
         if(recipeDto.getRecipeIngredientDtos() != null){
 
             //수정된 재료 db에 저장(중복 제외)
-            List<RecipeIngredientDto> recipeIngredientDtos = recipeDto.getRecipeIngredientDtos();
-            for(RecipeIngredientDto recipeIngredientDto: recipeIngredientDtos){
-                Ingredient ingredient = Ingredient.builder()
-                        .ingredientName(recipeIngredientDto.getIngredientName())
-                        .userIngredients(new ArrayList<>())
-                        .recipeIngredients(new ArrayList<>())
+            for (RecipeIngredientDto dto : recipeDto.getRecipeIngredientDtos()) {
+                // 기존 Ingredient 조회 또는 새로 생성
+                Ingredient ingredient = ingredientRepository.findByIngredientName(dto.getIngredientName())
+                        .orElseGet(() -> {
+                            Ingredient newIngredient = Ingredient.builder()
+                                    .ingredientName(dto.getIngredientName())
+                                    .recipeIngredients(new ArrayList<>())
+                                    .userIngredients(new ArrayList<>())
+                                    .build();
+                            return ingredientRepository.save(newIngredient);
+                        });
+
+                // RecipeIngredient 생성
+                RecipeIngredient recipeIngredient = RecipeIngredient.builder()
+                        .quantity(dto.getQuantity())
+                        .ingredient(ingredient)
                         .build();
-                try{
-                    ingredientRepository.save(ingredient);
-                }catch (DataIntegrityViolationException e){
-                    log.trace("이미 존재하는 데이터입니다.");
-                }
+
+                // 양방향 관계 설정
+                recipe.addRecipeIngredient(recipeIngredient);//문제는 이러면 추가만 가능하고 기존의 재료는 안사라짐
+                ingredient.addRecipeIngredient(recipeIngredient);//그러면 프론트에서 해당 재료의 id를 dto로 받고 지워버리기
             }
-
-            //수정된 재료 입력
-            List<RecipeIngredient> recipeIngredients = recipeDto.getRecipeIngredientDtos().stream().map(i -> RecipeIngredient
-                    .builder()
-                    .quantity(i.getQuantity())
-                    .recipe(recipe)
-                    .ingredient(ingredientRepository.findByIngredientName(i.getIngredientName()).get())
-                    .build()).collect(toList());
-
-            //recipeIngredient와 Ingredient의 연관관계 생성
-            for(RecipeIngredient recipeIngredient: recipeIngredients){
-                Ingredient ingredient = recipeIngredient.getIngredient();
-                ingredient.addRecipeIngredient(recipeIngredient);
-            }
-            updateRecipe.recipeIngredients(recipeIngredients);
         }
-        if(recipeDto.getRecipeStepDtos() != null){
-            List<RecipeStep> recipeSteps = recipeDto.getRecipeStepDtos().stream().map(s -> RecipeStep
-                    .builder()
-                    .stepOrder(s.getStepOrder())
-                    .content(s.getContent()).recipe(recipe)
-                    .build()).collect(toList());
-            updateRecipe.recipeSteps(recipeSteps);
-        }
+        for (RecipeStepDto stepDto : recipeDto.getRecipeStepDtos()) {
+            RecipeStep step = RecipeStep.builder()
+                    .stepOrder(stepDto.getStepOrder())
+                    .content(stepDto.getContent())
+                    .build();
+            recipe.addRecipeStep(step);//문제는 이러면 추가만 가능하고 기존의 단계는 안사라짐
+        }                               //그러면 프론트에서 해당 단계의 id를 dto로 받고 지워버리기
 
-        updateRecipe.build();
+        recipe.toBuilder().build();
+
+        return recipe.getId();
     }
 
     @Transactional

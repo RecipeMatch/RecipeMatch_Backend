@@ -11,6 +11,8 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+
 @Entity
 public class Ingredient {
 
@@ -18,12 +20,16 @@ public class Ingredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String ingredientName;
 
-    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "ingredient")
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
 
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.PERSIST)
     private List<UserIngredient> userIngredients = new ArrayList<>();
 
+    public void addRecipeIngredient(RecipeIngredient recipeIngredient) {
+        this.recipeIngredients.add(recipeIngredient);
+    }
 }

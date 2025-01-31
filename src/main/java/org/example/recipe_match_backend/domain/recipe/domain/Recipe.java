@@ -10,10 +10,12 @@ import org.example.recipe_match_backend.domain.user.domain.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder(toBuilder = true)
 @Entity
 public class Recipe extends BaseEntity {
 
@@ -22,31 +24,32 @@ public class Recipe extends BaseEntity {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String recipeName;
+
+    private String recipeName;//이름:레시피 입력시 필요한 내용
 
     @Column(length = 2000)
-    private String description;
+    private String description;//설명:레시피 입력시 필요한 내용
 
-    private int cookingTime;
-
-    @Enumerated(EnumType.STRING)
-    private DifficultyType difficulty;
+    private int cookingTime;//시간:레시피 입력시 필요한 내용
 
     @Enumerated(EnumType.STRING)
-    private CategoryType category;
+    private DifficultyType difficulty;//난이도:레시피 입력시 필요한 내용
+
+    @Enumerated(EnumType.STRING)
+    private CategoryType category;//카테고리:레시피 입력시 필요한 내용
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User user;//사용자:레시피 입력시 필요한 내용
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
-    private List<RecipeStep> recipeSteps = new ArrayList<>();
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    private List<RecipeStep> recipeSteps = new ArrayList<>();//레시피 단계 및 내용:레시피 입력시 필요한 내용
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
-    private List<RecipeIngredient> recipeIngredients = new ArrayList<>();
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    private List<RecipeIngredient> recipeIngredients = new ArrayList<>();//재료:레시피 입력시 필요한 내용
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
-    private List<RecipeTool> recipeTools = new ArrayList<>();
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    private List<RecipeTool> recipeTools = new ArrayList<>();//도구:레시피 입력시 필요한 내용
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
     private List<RecipeLike> recipeLikes = new ArrayList<>();
@@ -63,4 +66,50 @@ public class Recipe extends BaseEntity {
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
     private List<SearchHistory> searchHistories = new ArrayList<>();
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Recipe recipe = (Recipe) o;
+        return Objects.equals(id, recipe.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
+
+    public void addRecipeIngredient(RecipeIngredient recipeIngredient) {
+        recipeIngredient.setRecipe(this);
+        recipeIngredients.add(recipeIngredient);
+    }
+
+    public void addRecipeTool(RecipeTool recipeTool) {
+        recipeTool.setRecipe(this);
+        recipeTools.add(recipeTool);
+    }
+
+    public void addRecipeStep(RecipeStep recipeStep) {
+        recipeSteps.add(recipeStep);
+        recipeStep.setRecipe(this);
+    }
+
+    public void setRecipeName(String recipeName) {
+        this.recipeName = recipeName;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setDifficulty(DifficultyType difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public void setCategory(CategoryType category) {
+        this.category = category;
+    }
+
+    public void setCookingTime(int cookingTime) {
+        this.cookingTime = cookingTime;
+    }
 }

@@ -74,4 +74,7 @@ public class User extends BaseEntity {
     public void changeName(String newName){
         this.name = newName;
     }
+      public void addRecipe(Recipe recipe) {
+        this.recipes.add(recipe);
+      }
 }

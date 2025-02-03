@@ -35,12 +35,10 @@ public class JwtTokenProvider implements InitializingBean {
         Claims claims = Jwts.claims().setSubject(uid);
         claims.put("token_type", "accessToken");
 
-        long now = System.currentTimeMillis();
-        Date validity = new Date(now + jwtProperties.getAccessTokenExpiration());
+        Date validity = new Date((new Date()).getTime() + jwtProperties.getRefreshTokenExpiration());
 
         return Jwts.builder()
                 .setClaims(claims)                          // token_type, accessToken
-                .setIssuedAt(new Date(now))                 // 발급 시각
                 .setExpiration(validity)                    // 만료 시각
                 .signWith(key, SignatureAlgorithm.HS256)    // 서명
                 .compact();
@@ -55,12 +53,10 @@ public class JwtTokenProvider implements InitializingBean {
         Claims claims = Jwts.claims().setSubject(uid);
         claims.put("token_type", "refreshToken");
 
-        long now = System.currentTimeMillis();
-        Date validity = new Date(now + jwtProperties.getRefreshTokenExpiration());
+        Date validity = new Date((new Date()).getTime() + jwtProperties.getRefreshTokenExpiration());
 
         return Jwts.builder()
                 .setClaims(claims)                          // token_type, refreshToken
-                .setIssuedAt(new Date(now))                 // 발급 시각
                 .setExpiration(validity)                    // 만료 시각
                 .signWith(key, SignatureAlgorithm.HS256)    // 서명
                 .compact();

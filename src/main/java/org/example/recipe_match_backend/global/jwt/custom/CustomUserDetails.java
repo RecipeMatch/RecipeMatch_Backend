@@ -18,7 +18,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {     //유저 이메일 가져오기
-        return user.getGoogleUid();
+        return user.getUid();
     }
 
     @Override

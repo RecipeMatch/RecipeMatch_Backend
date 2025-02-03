@@ -23,9 +23,12 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String googleUid;
+    private String uid;
 
-    private String name;
+    @Column(nullable = false, unique = true)
+    private String nickname;
+
+    private String phoneNumber;
 
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
@@ -71,10 +74,11 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<UserIngredient> userIngredients = new ArrayList<>();
 
-    public void changeName(String newName){
-        this.name = newName;
+    public void updateInfo(String nickname, String phoneNumber){
+        this.nickname = nickname;
+        this.phoneNumber = phoneNumber;
     }
-      public void addRecipe(Recipe recipe) {
+    public void addRecipe(Recipe recipe) {
         this.recipes.add(recipe);
-      }
+    }
 }

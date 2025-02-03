@@ -4,7 +4,7 @@ spring:
   jpa:
     database: mysql
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
@@ -25,7 +25,7 @@ server:
 
 firebase:
   config:
-    path: "src/main/resources/firebase-adminsdk.json"
+
 
 jwt:
   secret: ${JWT_SECRET}

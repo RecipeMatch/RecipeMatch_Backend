@@ -19,12 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    private UserService userService;
-    private UserRepository userRepository;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private final UserService userService;
+    private final UserRepository userRepository;
 
     // 사용자 로그인, uid(email) 전달 받음
     @PostMapping("/login")

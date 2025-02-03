@@ -4,8 +4,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
 import org.example.recipe_match_backend.domain.user.domain.User;
+import org.example.recipe_match_backend.domain.user.dto.request.AddInfoRequest;
 import org.example.recipe_match_backend.domain.user.dto.request.OAuthRequest;
 import org.example.recipe_match_backend.domain.user.dto.request.RefreshRequest;
+import org.example.recipe_match_backend.domain.user.dto.response.TokenIncludeNicknameResponse;
 import org.example.recipe_match_backend.domain.user.dto.response.TokenResponse;
 import org.example.recipe_match_backend.global.exception.login.FirebaseUnAuthorization;
 import org.example.recipe_match_backend.global.exception.login.InvalidToken;
@@ -29,27 +31,20 @@ public class UserService {
      * 사용자 로그인 (신규 회원, 기존 회원)
      */
     @Transactional
-    public TokenResponse userLogin(OAuthRequest request) throws Exception{
-
-        // Firebase ID Token 검증
-        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(request.getIdToken());
-        if(decodedToken == null) {
-            throw new FirebaseUnAuthorization();
-        }
+    public TokenIncludeNicknameResponse userLogin(OAuthRequest request) throws Exception{
 
         // UID 추출
-        String uid = decodedToken.getUid();
-        String displayName = decodedToken.getName();
+        String uid = request.getUid();
 
-        Optional<User> users = userRepository.findByGoogleUid(uid);
+        Optional<User> users = userRepository.findByUid(uid);
 
         if(users.isPresent()){
             // 기존 회원 로그인
             User user = users.get();
-            return ExistingMemberLogin(user, displayName);
+            return ExistingMemberLogin(user);
         } else {
             // 신규 회원 로그인
-            return NewMemberLogin(uid, displayName);
+            return NewMemberLogin(uid);
         }
     }
 
@@ -58,16 +53,12 @@ public class UserService {
      * Google 회원 이름이 바뀌었을 경우 회원 정보 갱신
      * accessToken과 refreshToken 발행 후 반환
      */
-    private TokenResponse ExistingMemberLogin(User user, String displayName) {
+    private TokenIncludeNicknameResponse ExistingMemberLogin(User user) {
 
-        if(!displayName.equals(user.getName()) && !displayName.isBlank() && displayName != null){
-            user.changeName(displayName);
-        }
+        String accessToken = jwtTokenProvider.createAccessToken(user.getUid());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getUid());
 
-        String accessToken = jwtTokenProvider.createAccessToken(user.getGoogleUid());
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getGoogleUid());
-
-        return new TokenResponse(accessToken, refreshToken);
+        return new TokenIncludeNicknameResponse(accessToken, refreshToken, user.getNickname());
     }
 
     /**
@@ -75,18 +66,29 @@ public class UserService {
      * uid, name 바탕으로 db에 유저 정보 저장
      * 그러고 나서 accessToken과 refreshToken 발행 후 반환
      */
-    private TokenResponse NewMemberLogin(String uid, String name) {
+    private TokenIncludeNicknameResponse NewMemberLogin(String uid) {
+        String nickname = "User" + String.format("%010d", (long)(Math.random() * 10000000000L));
+
         User user = User.builder()
-                .googleUid(uid)
-                .name(name)
+                .uid(uid)
+                .nickname(nickname)
                 .build();
 
         userRepository.save(user);
 
-        String accessToken = jwtTokenProvider.createAccessToken(user.getGoogleUid());
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getGoogleUid());
+        String accessToken = jwtTokenProvider.createAccessToken(user.getUid());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getUid());
 
-        return new TokenResponse(accessToken, refreshToken);
+        return new TokenIncludeNicknameResponse(accessToken, refreshToken, nickname);
+    }
+
+    /**
+     * 회원의 추가 정보 저장
+     */
+    @Transactional
+    public void updateInfo(AddInfoRequest request, User user){
+        user.updateInfo(request.getNickname(), request.getNickname());
+        userRepository.save(user);
     }
 
     /**
@@ -102,11 +104,11 @@ public class UserService {
         }
         String uid = jwtTokenProvider.getUid(refreshRequest.getRefreshToken());
 
-        User user = userRepository.findByGoogleUid(uid)
+        User user = userRepository.findByUid(uid)
                 .orElseThrow(UserNotFoundException::new);
 
-        String accessToken = jwtTokenProvider.createAccessToken(user.getGoogleUid());
-        String refreshToken = jwtTokenProvider.createRefreshToken(user.getGoogleUid());
+        String accessToken = jwtTokenProvider.createAccessToken(user.getUid());
+        String refreshToken = jwtTokenProvider.createRefreshToken(user.getUid());
 
         return new TokenResponse(accessToken, refreshToken);
     }

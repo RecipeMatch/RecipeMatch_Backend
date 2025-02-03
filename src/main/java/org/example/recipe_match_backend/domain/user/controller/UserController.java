@@ -1,5 +1,6 @@
 package org.example.recipe_match_backend.domain.user.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.example.recipe_match_backend.domain.user.domain.User;
 import org.example.recipe_match_backend.domain.user.dto.request.AddInfoRequest;
 import org.example.recipe_match_backend.domain.user.dto.request.OAuthRequest;
@@ -8,20 +9,18 @@ import org.example.recipe_match_backend.domain.user.dto.response.TokenIncludeNic
 import org.example.recipe_match_backend.domain.user.dto.response.TokenResponse;
 import org.example.recipe_match_backend.domain.user.repository.UserRepository;
 import org.example.recipe_match_backend.domain.user.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    private UserService userService;
-    private UserRepository userRepository;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private final UserService userService;
+    private final UserRepository userRepository;
 
     // 사용자 로그인, uid(email) 전달 받음
     @PostMapping("/login")

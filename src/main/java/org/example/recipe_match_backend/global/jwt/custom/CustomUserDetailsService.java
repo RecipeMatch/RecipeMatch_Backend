@@ -19,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         return new CustomUserDetails(
-                userRepository.findByGoogleUid(username).orElseThrow(UserNotFoundException::new));
+                userRepository.findByUid(username).orElseThrow(UserNotFoundException::new));
     }
 
 

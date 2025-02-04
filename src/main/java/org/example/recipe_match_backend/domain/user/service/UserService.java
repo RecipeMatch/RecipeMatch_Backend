@@ -87,7 +87,7 @@ public class UserService {
      */
     @Transactional
     public void updateInfo(AddInfoRequest request, User user){
-        user.updateInfo(request.getNickname(), request.getNickname());
+        user.updateInfo(request);
         userRepository.save(user);
     }
 

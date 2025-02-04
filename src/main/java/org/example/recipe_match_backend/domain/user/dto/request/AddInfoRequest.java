@@ -10,6 +10,7 @@ import org.example.recipe_match_backend.domain.user.domain.User;
 @Getter
 public class AddInfoRequest {
 
+    private String uid;
     private String nickname;
     private String phoneNumber;
 

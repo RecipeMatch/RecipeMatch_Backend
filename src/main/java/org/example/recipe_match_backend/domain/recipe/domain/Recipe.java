@@ -24,7 +24,6 @@ public class Recipe extends BaseEntity {
     private Long id;
 
     @Column(nullable = false, unique = true)
-
     private String recipeName;//이름:레시피 입력시 필요한 내용
 
     @Column(length = 2000)

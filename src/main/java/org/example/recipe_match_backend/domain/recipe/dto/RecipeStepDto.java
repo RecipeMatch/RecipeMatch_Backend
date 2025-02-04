@@ -1,13 +1,10 @@
 package org.example.recipe_match_backend.domain.recipe.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.example.recipe_match_backend.domain.recipe.domain.RecipeStep;
 
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
 public class RecipeStepDto {

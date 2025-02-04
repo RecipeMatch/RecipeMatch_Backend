@@ -1,12 +1,13 @@
 package org.example.recipe_match_backend.domain.recipe.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.recipe_match_backend.domain.recipe.domain.RecipeIngredient;
 
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class RecipeIngredientDto {
 

@@ -9,8 +9,12 @@ import org.example.recipe_match_backend.domain.recipe.domain.*;
 import org.example.recipe_match_backend.domain.recipe.dto.RecipeIngredientDto;
 import org.example.recipe_match_backend.domain.recipe.dto.RecipeStepDto;
 import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeUpdateRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeResponse;
+import org.example.recipe_match_backend.domain.recipe.repository.RecipeIngredientRepository;
 import org.example.recipe_match_backend.domain.recipe.repository.RecipeRepository;
+import org.example.recipe_match_backend.domain.recipe.repository.RecipeStepRepository;
+import org.example.recipe_match_backend.domain.recipe.repository.RecipeToolRepository;
 import org.example.recipe_match_backend.domain.tool.domain.Tool;
 import org.example.recipe_match_backend.domain.tool.repository.ToolRepository;
 import org.example.recipe_match_backend.domain.user.domain.User;
@@ -25,7 +29,6 @@ import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 @Transactional(readOnly = true)
 public class RecipeService {
 
@@ -33,6 +36,9 @@ public class RecipeService {
     private final UserRepository userRepository;
     private final ToolRepository toolRepository;
     private final IngredientRepository ingredientRepository;
+    private final RecipeIngredientRepository recipeIngredientRepository;
+    private final RecipeStepRepository recipeStepRepository;
+    private final RecipeToolRepository recipeToolRepository;
 
     @Transactional
     public Long save(RecipeRequest recipeRequest, Long userId) {
@@ -118,27 +124,27 @@ public class RecipeService {
     }
 
     @Transactional
-    public Long update(Long recipeId, RecipeRequest recipeRequest){
+    public Long update(Long recipeId, RecipeUpdateRequest recipeUpdateRequest){
 
         Recipe recipe = recipeRepository.findById(recipeId).get();
 
         //null체크
-        if(recipeRequest.getRecipeName() != null){
-            recipe.setRecipeName(recipeRequest.getRecipeName());
+        if(recipeUpdateRequest.getRecipeName() != null){
+            recipe.setRecipeName(recipeUpdateRequest.getRecipeName());
         }
-        if(recipeRequest.getCategory() != null){
-            recipe.setCategory(recipeRequest.getCategory());
+        if(recipeUpdateRequest.getCategory() != null){
+            recipe.setCategory(recipeUpdateRequest.getCategory());
         }
-        if(recipeRequest.getDescription() != null){
-            recipe.setDescription(recipeRequest.getDescription());
+        if(recipeUpdateRequest.getDescription() != null){
+            recipe.setDescription(recipeUpdateRequest.getDescription());
         }
-        if(recipeRequest.getCookingTime() != null){
-            recipe.setCookingTime(recipeRequest.getCookingTime());
+        if(recipeUpdateRequest.getCookingTime() != null){
+            recipe.setCookingTime(recipeUpdateRequest.getCookingTime());
         }
-        if(recipeRequest.getToolName() != null){
 
+        if(recipeUpdateRequest.getToolName() != null){
             //수정된 toolName db에 저장(중복 제외)
-            for (String toolName : recipeRequest.getToolName()) {
+            for (String toolName : recipeUpdateRequest.getToolName()) {
                 Tool tool = toolRepository.findByToolName(toolName)
                         .orElseGet(() -> {
                             Tool newTool = Tool.builder()
@@ -155,15 +161,24 @@ public class RecipeService {
                         .build();
 
                 // 양방향 관계 설정
-                recipe.addRecipeTool(recipeTool);//문제는 이러면 추가만 가능하고 기존의 도구는 안사라짐
-                tool.addRecipeTool(recipeTool);//그러면 프론트에서 해당 도구의 id를 dto로 받고 지워버리기
+                recipe.addRecipeTool(recipeTool);
+                tool.addRecipeTool(recipeTool);
             }
-
         }
-        if(recipeRequest.getRecipeIngredientDtos() != null){
 
+        //기존 레시피 도구 객체 삭제
+        if(recipeUpdateRequest.getDeleteToolIds() != null){
+            for(Long toolId: recipeUpdateRequest.getDeleteToolIds()){
+                RecipeTool recipeTool = recipeToolRepository.findById(toolId).get();
+                recipeTool.getTool().getRecipeTools().remove(recipeTool);
+                recipe.getRecipeTools().remove(recipeTool);
+                //recipeToolRepository.deleteById(toolId); : 영속성 전파 ALL
+            }
+        }
+
+        if(recipeUpdateRequest.getRecipeIngredientDtos() != null){
             //수정된 재료 db에 저장(중복 제외)
-            for (RecipeIngredientDto dto : recipeRequest.getRecipeIngredientDtos()) {
+            for (RecipeIngredientDto dto : recipeUpdateRequest.getRecipeIngredientDtos()) {
                 // 기존 Ingredient 조회 또는 새로 생성
                 Ingredient ingredient = ingredientRepository.findByIngredientName(dto.getIngredientName())
                         .orElseGet(() -> {
@@ -182,19 +197,39 @@ public class RecipeService {
                         .build();
 
                 // 양방향 관계 설정
-                recipe.addRecipeIngredient(recipeIngredient);//문제는 이러면 추가만 가능하고 기존의 재료는 안사라짐
-                ingredient.addRecipeIngredient(recipeIngredient);//그러면 프론트에서 해당 재료의 id를 dto로 받고 지워버리기
+                recipe.addRecipeIngredient(recipeIngredient);
+                ingredient.addRecipeIngredient(recipeIngredient);
             }
         }
-        for (RecipeStepDto stepDto : recipeRequest.getRecipeStepDtos()) {
-            RecipeStep step = RecipeStep.builder()
-                    .stepOrder(stepDto.getStepOrder())
-                    .content(stepDto.getContent())
-                    .build();
-            recipe.addRecipeStep(step);//문제는 이러면 추가만 가능하고 기존의 단계는 안사라짐
-        }                               //그러면 프론트에서 해당 단계의 id를 dto로 받고 지워버리기
 
-        recipe.toBuilder().build();
+        //기존 레시피 재료 객체 삭제
+        if(recipeUpdateRequest.getDeleteIngredientIds() != null){
+            for(Long ingredientId: recipeUpdateRequest.getDeleteIngredientIds()){
+                RecipeIngredient recipeIngredient = recipeIngredientRepository.findById(ingredientId).get();
+                recipeIngredient.getIngredient().getRecipeIngredients().remove(recipeIngredient);
+                recipe.getRecipeIngredients().remove(recipeIngredient);
+                //recipeIngredientRepository.deleteById(ingredientId); : 영속성 전파 ALL
+            }
+        }
+
+        if(recipeUpdateRequest.getRecipeStepDtos() != null){
+            for (RecipeStepDto stepDto : recipeUpdateRequest.getRecipeStepDtos()) {
+                RecipeStep step = RecipeStep.builder()
+                        .stepOrder(stepDto.getStepOrder())
+                        .content(stepDto.getContent())
+                        .build();
+                recipe.addRecipeStep(step);
+            }
+        }
+
+        //기존 레시피 단계 객체 삭제
+        if(recipeUpdateRequest.getDeleteStepIds() != null){
+            for(Long stepId: recipeUpdateRequest.getDeleteStepIds()){
+                RecipeStep recipeStep = recipeStepRepository.findById(stepId).get();
+                recipe.getRecipeSteps().remove(recipeStep);
+                //recipeStepRepository.deleteById(stepId); : 영속성 전파 ALL
+            }
+        }
 
         return recipe.getId();
     }

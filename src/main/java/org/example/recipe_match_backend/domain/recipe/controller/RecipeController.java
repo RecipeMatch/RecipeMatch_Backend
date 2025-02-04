@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeUpdateRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeResponse;
 import org.example.recipe_match_backend.domain.recipe.service.RecipeService;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +35,8 @@ public class RecipeController {
     }
 
     @PatchMapping("/recipe")
-    public void update(@RequestParam Long recipeId,@ModelAttribute RecipeRequest recipeRequest){
-        recipeService.update(recipeId, recipeRequest);
+    public void update(@RequestParam Long recipeId, @ModelAttribute RecipeUpdateRequest recipeUpdateRequest){
+        recipeService.update(recipeId, recipeUpdateRequest);
     }
 
     @DeleteMapping("/recipe")

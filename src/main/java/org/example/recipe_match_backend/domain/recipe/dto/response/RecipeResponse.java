@@ -1,9 +1,6 @@
 package org.example.recipe_match_backend.domain.recipe.dto.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.example.recipe_match_backend.domain.recipe.domain.Recipe;
 import org.example.recipe_match_backend.domain.recipe.dto.RecipeIngredientDto;
@@ -18,8 +15,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @NoArgsConstructor
-@AllArgsConstructor
-@Slf4j
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
 public class RecipeResponse {

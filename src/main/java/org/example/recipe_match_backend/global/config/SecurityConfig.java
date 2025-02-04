@@ -38,16 +38,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(AbstractHttpConfigurer::disable) //cors -> cors.configurationSource(corsConfigurationSource())
                 .csrf(CsrfConfigurer::disable)
                 .httpBasic(HttpBasicConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth ->
-                                auth.requestMatchers(AUTH_WHITELIST)
-                                        .permitAll()
-                                        .anyRequest()
-                                        .authenticated())
+                                auth.anyRequest().permitAll())  // .requestMatchers(AUTH_WHITELIST).authenticated() : 개발 및 테스트 환경 아닐 시
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(

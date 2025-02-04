@@ -31,7 +31,7 @@ public class UserController {
     // 기존 회원 정보 추가 (닉네임, 전화번호)
     @PutMapping("/updateInfo")
     public ResponseEntity<Void> updateInfo(@RequestBody AddInfoRequest request){
-        User user = userRepository.findByNickname(request.getNickname()).get();
+        User user = userRepository.findByUid(request.getUid()).get();
         userService.updateInfo(request, user);
         return ResponseEntity.status(HttpStatus.OK).build();
     }

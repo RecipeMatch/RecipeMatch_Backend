@@ -62,12 +62,12 @@ public class RecipeService {
         user.addRecipe(recipe);
 
         // Ingredients 처리
-        for (RecipeIngredientDto dto : recipeRequest.getRecipeIngredientDtos()) {
+        for (RecipeIngredientDto ingredientDto : recipeRequest.getRecipeIngredientDtos()) {
             // 기존 Ingredient 조회 또는 새로 생성
-            Ingredient ingredient = ingredientRepository.findByIngredientName(dto.getIngredientName())
+            Ingredient ingredient = ingredientRepository.findByIngredientName(ingredientDto.getIngredientName())
                     .orElseGet(() -> {
                         Ingredient newIngredient = Ingredient.builder()
-                                .ingredientName(dto.getIngredientName())
+                                .ingredientName(ingredientDto.getIngredientName())
                                 .recipeIngredients(new ArrayList<>())
                                 .userIngredients(new ArrayList<>())
                                 .build();
@@ -76,7 +76,7 @@ public class RecipeService {
 
             // RecipeIngredient 생성
             RecipeIngredient recipeIngredient = RecipeIngredient.builder()
-                    .quantity(dto.getQuantity())
+                    .quantity(ingredientDto.getQuantity())
                     .ingredient(ingredient)
                     .build();
 

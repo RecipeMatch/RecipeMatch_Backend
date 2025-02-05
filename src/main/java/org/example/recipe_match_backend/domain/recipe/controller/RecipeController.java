@@ -31,7 +31,7 @@ public class RecipeController {
     @PostMapping("/recipe")
     public void create(@RequestBody RecipeRequest recipeRequest, HttpServletRequest request){
         HttpSession session = request.getSession(false);
-        Long userId = 1L;//(Long)session.getAttribute("userId");
+        Long userId = (Long)session.getAttribute("userId");
         recipeService.save(recipeRequest,userId);
     }
 

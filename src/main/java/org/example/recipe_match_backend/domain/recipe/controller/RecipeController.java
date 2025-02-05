@@ -3,6 +3,7 @@ package org.example.recipe_match_backend.domain.recipe.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeUpdateRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeResponse;
@@ -28,14 +29,14 @@ public class RecipeController {
     }
 
     @PostMapping("/recipe")
-    public void create(@ModelAttribute RecipeRequest recipeRequest, HttpServletRequest request){
+    public void create(@RequestBody RecipeRequest recipeRequest, HttpServletRequest request){
         HttpSession session = request.getSession(false);
-        Long userId = (Long)session.getAttribute("userId");
+        Long userId = 1L;//(Long)session.getAttribute("userId");
         recipeService.save(recipeRequest,userId);
     }
 
     @PatchMapping("/recipe")
-    public void update(@RequestParam Long recipeId, @ModelAttribute RecipeUpdateRequest recipeUpdateRequest){
+    public void update(@RequestParam Long recipeId, @RequestBody RecipeUpdateRequest recipeUpdateRequest){
         recipeService.update(recipeId, recipeUpdateRequest);
     }
 

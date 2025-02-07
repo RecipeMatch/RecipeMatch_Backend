@@ -50,7 +50,7 @@ public class Recipe extends BaseEntity {
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<RecipeTool> recipeTools = new ArrayList<>();//도구:레시피 입력시 필요한 내용
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
     private List<RecipeLike> recipeLikes = new ArrayList<>();
 
     @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)

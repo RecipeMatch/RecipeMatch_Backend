@@ -6,7 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeUpdateRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeAllResponse;
 import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeResponse;
+import org.example.recipe_match_backend.domain.recipe.repository.RecipeLikeRepository;
 import org.example.recipe_match_backend.domain.recipe.service.RecipeService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,12 +21,14 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     @GetMapping("/recipe")
-    public RecipeResponse find(@RequestParam Long recipeId){
-        return recipeService.find(recipeId);
+    public RecipeResponse find(@RequestParam Long recipeId,HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        Long userId = (Long)session.getAttribute("userId");
+        return recipeService.find(recipeId,userId);
     }
 
     @GetMapping("/recipeAll")
-    public List<RecipeResponse> findAll(){
+    public List<RecipeAllResponse> findAll(){
         return recipeService.findAll();
     }
 
@@ -43,5 +47,12 @@ public class RecipeController {
     @DeleteMapping("/recipe")
     public void delete(@RequestParam Long recipeId){
         recipeService.delete(recipeId);
+    }
+
+    @PostMapping("/recipe/like")
+    public Long recipeLike(@RequestParam Long recipeId, HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        Long userId = (Long)session.getAttribute("userId");
+        return recipeService.recipeLike(recipeId, userId);
     }
 }

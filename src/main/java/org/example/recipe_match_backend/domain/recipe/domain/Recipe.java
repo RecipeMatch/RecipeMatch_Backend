@@ -41,28 +41,28 @@ public class Recipe extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;//사용자:레시피 입력시 필요한 내용
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeStep> recipeSteps = new ArrayList<>();//레시피 단계 및 내용:레시피 입력시 필요한 내용
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeIngredient> recipeIngredients = new ArrayList<>();//재료:레시피 입력시 필요한 내용
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeTool> recipeTools = new ArrayList<>();//도구:레시피 입력시 필요한 내용
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeLike> recipeLikes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeBookMark> recipeFavorites = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeComment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RecipeRating> ratings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SearchHistory> searchHistories = new ArrayList<>();
 
     @Override

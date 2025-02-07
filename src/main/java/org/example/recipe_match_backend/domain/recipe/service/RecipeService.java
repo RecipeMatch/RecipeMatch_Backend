@@ -10,6 +10,7 @@ import org.example.recipe_match_backend.domain.recipe.dto.RecipeIngredientDto;
 import org.example.recipe_match_backend.domain.recipe.dto.RecipeStepDto;
 import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeUpdateRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeAllResponse;
 import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeResponse;
 import org.example.recipe_match_backend.domain.recipe.repository.*;
 import org.example.recipe_match_backend.domain.tool.domain.Tool;
@@ -237,14 +238,16 @@ public class RecipeService {
         recipeRepository.deleteById(recipeId);
     }
 
-    public RecipeResponse find(Long recipeId){
+    public RecipeResponse find(Long recipeId,Long userId){
         Recipe recipe = recipeRepository.findById(recipeId).get();
-        return new RecipeResponse(recipe);
+        User user = userRepository.findById(userId).get();
+        Boolean recipeLike = recipeLikeRepository.findByUserAndRecipe(user,recipe).isPresent();
+        return new RecipeResponse(recipe,recipeLike);
     }
 
-    public List<RecipeResponse> findAll(){
+    public List<RecipeAllResponse> findAll(){
         List<Recipe> recipes = recipeRepository.findAll();
-        return recipes.stream().map(r -> new RecipeResponse(r)).collect(toList());
+        return recipes.stream().map(r -> new RecipeAllResponse(r)).collect(toList());
     }
 
     public Long recipeLike(Long recipeId, Long userId){

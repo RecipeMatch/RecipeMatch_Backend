@@ -3,6 +3,7 @@ package org.example.recipe_match_backend.domain.recipe.dto.response;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.example.recipe_match_backend.domain.recipe.domain.Recipe;
+import org.example.recipe_match_backend.domain.recipe.domain.RecipeLike;
 import org.example.recipe_match_backend.domain.recipe.dto.RecipeIngredientDto;
 import org.example.recipe_match_backend.domain.recipe.dto.RecipeStepDto;
 import org.example.recipe_match_backend.domain.recipe.domain.RecipeTool;
@@ -36,7 +37,9 @@ public class RecipeResponse {
 
     private List<String> toolName = new ArrayList<>();//RecipeTool
 
-    public RecipeResponse(Recipe recipe){
+    private Boolean recipeLike;
+
+    public RecipeResponse(Recipe recipe, Boolean recipeLike){
         this.recipeName = recipe.getRecipeName();
         this.description = recipe.getDescription();
         this.cookingTime = recipe.getCookingTime();
@@ -47,5 +50,6 @@ public class RecipeResponse {
         for(RecipeTool recipeTool:recipe.getRecipeTools()){
             this.toolName.add(recipeTool.getTool().getToolName());
         }
+        this.recipeLike = recipeLike;
     }
 }

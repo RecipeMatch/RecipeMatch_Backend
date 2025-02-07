@@ -44,4 +44,11 @@ public class RecipeController {
     public void delete(@RequestParam Long recipeId){
         recipeService.delete(recipeId);
     }
+
+    @PostMapping("/recipe/like")
+    public Long recipeLike(@RequestParam Long recipeId, HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        Long userId = (Long)session.getAttribute("userId");
+        return recipeService.recipeLike(recipeId, userId);
+    }
 }

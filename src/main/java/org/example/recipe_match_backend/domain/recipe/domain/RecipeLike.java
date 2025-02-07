@@ -10,6 +10,7 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Entity
 public class RecipeLike extends BaseEntity {
 

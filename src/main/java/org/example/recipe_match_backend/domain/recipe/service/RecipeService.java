@@ -11,10 +11,7 @@ import org.example.recipe_match_backend.domain.recipe.dto.RecipeStepDto;
 import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeUpdateRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeResponse;
-import org.example.recipe_match_backend.domain.recipe.repository.RecipeIngredientRepository;
-import org.example.recipe_match_backend.domain.recipe.repository.RecipeRepository;
-import org.example.recipe_match_backend.domain.recipe.repository.RecipeStepRepository;
-import org.example.recipe_match_backend.domain.recipe.repository.RecipeToolRepository;
+import org.example.recipe_match_backend.domain.recipe.repository.*;
 import org.example.recipe_match_backend.domain.tool.domain.Tool;
 import org.example.recipe_match_backend.domain.tool.repository.ToolRepository;
 import org.example.recipe_match_backend.domain.user.domain.User;
@@ -39,6 +36,7 @@ public class RecipeService {
     private final RecipeIngredientRepository recipeIngredientRepository;
     private final RecipeStepRepository recipeStepRepository;
     private final RecipeToolRepository recipeToolRepository;
+    private final RecipeLikeRepository recipeLikeRepository;
 
     @Transactional
     public Long save(RecipeRequest recipeRequest, Long userId) {
@@ -247,6 +245,21 @@ public class RecipeService {
     public List<RecipeResponse> findAll(){
         List<Recipe> recipes = recipeRepository.findAll();
         return recipes.stream().map(r -> new RecipeResponse(r)).collect(toList());
+    }
+
+    public Long recipeLike(Long recipeId, Long userId){
+        Recipe recipe = recipeRepository.findById(recipeId).get();
+        User user = userRepository.findById(userId).get();
+        if (recipeLikeRepository.findByUserAndRecipe(user, recipe).isEmpty()){
+            RecipeLike recipeLike = RecipeLike.builder().recipe(recipe).user(user).build();
+            recipe.getRecipeLikes().add(recipeLike);
+            user.getRecipeLikes().add(recipeLike);
+            return recipeLike.getId();
+        }
+        else{
+            recipeLikeRepository.deleteByUserAndRecipe(user,recipe);
+            return null;
+        }
     }
 
 }

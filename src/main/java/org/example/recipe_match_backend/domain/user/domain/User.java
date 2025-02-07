@@ -36,7 +36,7 @@ public class User extends BaseEntity {
     private List<Recipe> recipes = new ArrayList<>();
 
     @Builder.Default
-    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "user")
     private List<RecipeLike> recipeLikes = new ArrayList<>();
 
     @Builder.Default

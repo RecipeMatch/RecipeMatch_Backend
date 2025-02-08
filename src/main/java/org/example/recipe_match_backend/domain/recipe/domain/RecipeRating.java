@@ -11,6 +11,7 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Entity
 public class RecipeRating extends BaseEntity {
 
@@ -27,6 +28,13 @@ public class RecipeRating extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")
     private Recipe recipe;
+
+    public void updateRating(int newRating){
+        if(newRating < 1 || newRating > 5){
+        }
+
+        this.ratingValue = newRating;
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -3,18 +3,17 @@ package org.example.recipe_match_backend.domain.recipe.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeRequest;
-import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeUpdateRequest;
-import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeAllResponse;
-import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeResponse;
-import org.example.recipe_match_backend.domain.recipe.repository.RecipeLikeRepository;
+import org.example.recipe_match_backend.domain.recipe.dto.request.recipe.RecipeRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.request.recipe.RecipeUpdateRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.response.recipe.RecipeAllResponse;
+import org.example.recipe_match_backend.domain.recipe.dto.response.recipe.RecipeResponse;
 import org.example.recipe_match_backend.domain.recipe.service.RecipeService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/recipes")
 @RequiredArgsConstructor
 public class RecipeController {
 

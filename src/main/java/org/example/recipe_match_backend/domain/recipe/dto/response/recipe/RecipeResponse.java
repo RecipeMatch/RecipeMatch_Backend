@@ -1,10 +1,12 @@
-package org.example.recipe_match_backend.domain.recipe.dto.response;
+package org.example.recipe_match_backend.domain.recipe.dto.response.recipe;
 
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.example.recipe_match_backend.domain.recipe.domain.Recipe;
-import org.example.recipe_match_backend.domain.recipe.domain.RecipeTool;
+import org.example.recipe_match_backend.domain.recipe.domain.RecipeLike;
 import org.example.recipe_match_backend.domain.recipe.dto.RecipeIngredientDto;
 import org.example.recipe_match_backend.domain.recipe.dto.RecipeStepDto;
+import org.example.recipe_match_backend.domain.recipe.domain.RecipeTool;
 import org.example.recipe_match_backend.type.CategoryType;
 import org.example.recipe_match_backend.type.DifficultyType;
 
@@ -17,7 +19,7 @@ import static java.util.stream.Collectors.toList;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @Getter
-public class RecipeAllResponse {
+public class RecipeResponse {
 
     private String recipeName;//Recipe
 
@@ -35,7 +37,9 @@ public class RecipeAllResponse {
 
     private List<String> toolName = new ArrayList<>();//RecipeTool
 
-    public RecipeAllResponse(Recipe recipe){
+    private Boolean recipeLike;
+
+    public RecipeResponse(Recipe recipe, Boolean recipeLike){
         this.recipeName = recipe.getRecipeName();
         this.description = recipe.getDescription();
         this.cookingTime = recipe.getCookingTime();
@@ -46,5 +50,6 @@ public class RecipeAllResponse {
         for(RecipeTool recipeTool:recipe.getRecipeTools()){
             this.toolName.add(recipeTool.getTool().getToolName());
         }
+        this.recipeLike = recipeLike;
     }
 }

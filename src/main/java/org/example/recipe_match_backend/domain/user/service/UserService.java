@@ -1,7 +1,5 @@
 package org.example.recipe_match_backend.domain.user.service;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
 import org.example.recipe_match_backend.domain.user.domain.User;
 import org.example.recipe_match_backend.domain.user.dto.request.AddInfoRequest;
@@ -9,8 +7,7 @@ import org.example.recipe_match_backend.domain.user.dto.request.OAuthRequest;
 import org.example.recipe_match_backend.domain.user.dto.request.RefreshRequest;
 import org.example.recipe_match_backend.domain.user.dto.response.TokenIncludeNicknameResponse;
 import org.example.recipe_match_backend.domain.user.dto.response.TokenResponse;
-import org.example.recipe_match_backend.global.exception.login.FirebaseUnAuthorization;
-import org.example.recipe_match_backend.global.exception.login.InvalidToken;
+import org.example.recipe_match_backend.global.exception.login.InvalidTokenException;
 import org.example.recipe_match_backend.global.exception.login.UserNotFoundException;
 import org.example.recipe_match_backend.global.jwt.JwtTokenProvider;
 import org.example.recipe_match_backend.domain.user.repository.UserRepository;
@@ -100,7 +97,7 @@ public class UserService {
     public TokenResponse recreateToken(RefreshRequest refreshRequest) {
 
         if(!jwtTokenProvider.validateRefreshToken(refreshRequest.getRefreshToken())){
-            throw new InvalidToken();
+            throw new InvalidTokenException();
         }
         String uid = jwtTokenProvider.getUid(refreshRequest.getRefreshToken());
 

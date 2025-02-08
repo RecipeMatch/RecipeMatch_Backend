@@ -17,8 +17,9 @@ public enum ErrorCode {
     DUPLICATE_USER(HttpStatus.CONFLICT, "EL002", "이미 존재하는 사용자입니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "EL003", "유효하지 않은 토큰입니다."),
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "EL004", "접근이 거부되었습니다."),
-    FIREBASE_AUTHORIZATION_TO_BE_FAILED(HttpStatus.UNAUTHORIZED, "EL005", "Firebase 인증 실패했습니다.")
-    ;
+
+    // rating 관련
+    INVALID_RATING_VALUE(HttpStatus.BAD_REQUEST, "ER001", "별점은 1과 5 사이여야 합니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

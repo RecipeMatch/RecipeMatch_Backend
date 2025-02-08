@@ -36,9 +36,6 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-    // Firebase SDK Admin
-    implementation("com.google.firebase:firebase-admin:9.1.1")
-
     // JWT 사용
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("io.jsonwebtoken:jjwt-impl:0.11.5")

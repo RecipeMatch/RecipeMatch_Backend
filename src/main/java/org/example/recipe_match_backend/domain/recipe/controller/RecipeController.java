@@ -3,28 +3,28 @@ package org.example.recipe_match_backend.domain.recipe.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeRequest;
-import org.example.recipe_match_backend.domain.recipe.dto.request.RecipeUpdateRequest;
-import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeAllResponse;
-import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeResponse;
-import org.example.recipe_match_backend.domain.recipe.repository.RecipeLikeRepository;
+import org.example.recipe_match_backend.domain.recipe.dto.request.recipe.RecipeIdAndUserIdRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.request.recipe.RecipeRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.request.recipe.RecipeUpdateRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeIdAndUserIdResponse;
+import org.example.recipe_match_backend.domain.recipe.dto.response.recipe.RecipeAllResponse;
+import org.example.recipe_match_backend.domain.recipe.dto.response.recipe.RecipeResponse;
 import org.example.recipe_match_backend.domain.recipe.service.RecipeService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class RecipeController {
 
     private final RecipeService recipeService;
 
     @GetMapping("/recipe")
-    public RecipeResponse find(@RequestParam Long recipeId,HttpServletRequest request){
-        HttpSession session = request.getSession(false);
-        Long userId = (Long)session.getAttribute("userId");
-        return recipeService.find(recipeId,userId);
+    public RecipeResponse find(@RequestBody RecipeIdAndUserIdRequest request){
+        return recipeService.find(request.getRecipeId(), request.getUserId());
     }
 
     @GetMapping("/recipeAll")
@@ -33,26 +33,18 @@ public class RecipeController {
     }
 
     @PostMapping("/recipe")
-    public void create(@RequestBody RecipeRequest recipeRequest, HttpServletRequest request){
-        HttpSession session = request.getSession(false);
-        Long userId = (Long)session.getAttribute("userId");
-        recipeService.save(recipeRequest,userId);
+    public ResponseEntity<RecipeIdAndUserIdResponse> create(@RequestBody RecipeRequest request){
+        return ResponseEntity.ok(recipeService.save(request));
+
     }
 
-    @PatchMapping("/recipe")
-    public void update(@RequestParam Long recipeId, @RequestBody RecipeUpdateRequest recipeUpdateRequest){
-        recipeService.update(recipeId, recipeUpdateRequest);
+    @PatchMapping("/recipe/{recipeId}")
+    public ResponseEntity<RecipeIdAndUserIdResponse> update(@PathVariable Long recipeId, @RequestBody RecipeUpdateRequest request){
+        return ResponseEntity.ok(recipeService.update(recipeId, request));
     }
 
-    @DeleteMapping("/recipe")
-    public void delete(@RequestParam Long recipeId){
+    @DeleteMapping("/recipe/{recipeId}")
+    public void delete(@PathVariable Long recipeId){
         recipeService.delete(recipeId);
-    }
-
-    @PostMapping("/recipe/like")
-    public Long recipeLike(@RequestParam Long recipeId, HttpServletRequest request){
-        HttpSession session = request.getSession(false);
-        Long userId = (Long)session.getAttribute("userId");
-        return recipeService.recipeLike(recipeId, userId);
     }
 }

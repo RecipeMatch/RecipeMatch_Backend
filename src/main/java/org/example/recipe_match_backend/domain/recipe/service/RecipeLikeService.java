@@ -3,6 +3,7 @@ package org.example.recipe_match_backend.domain.recipe.service;
 import lombok.RequiredArgsConstructor;
 import org.example.recipe_match_backend.domain.recipe.domain.Recipe;
 import org.example.recipe_match_backend.domain.recipe.domain.RecipeLike;
+import org.example.recipe_match_backend.domain.recipe.dto.request.recipe.RecipeIdAndUserIdRequest;
 import org.example.recipe_match_backend.domain.recipe.repository.RecipeLikeRepository;
 import org.example.recipe_match_backend.domain.recipe.repository.RecipeRepository;
 import org.example.recipe_match_backend.domain.user.domain.User;
@@ -19,9 +20,9 @@ public class RecipeLikeService {
     private UserRepository userRepository;
     private RecipeLikeRepository recipeLikeRepository;
 
-    public Long recipeLike(Long recipeId, Long userId){
-        Recipe recipe = recipeRepository.findById(recipeId).get();
-        User user = userRepository.findById(userId).get();
+    public Long recipeLike(RecipeIdAndUserIdRequest request){
+        Recipe recipe = recipeRepository.findById(request.getRecipeId()).get();
+        User user = userRepository.findById(request.getUserId()).get();
         if (recipeLikeRepository.findByUserAndRecipe(user, recipe).isEmpty()){
             RecipeLike recipeLike = RecipeLike.builder().recipe(recipe).user(user).build();
             recipe.getRecipeLikes().add(recipeLike);

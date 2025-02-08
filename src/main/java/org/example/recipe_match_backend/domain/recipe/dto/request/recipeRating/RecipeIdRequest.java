@@ -6,7 +6,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Getter
-public class RecipeAverageRatingRequest {
+public class RecipeIdRequest {
     private Long recipeId;
 
 }

@@ -9,6 +9,7 @@ import org.example.recipe_match_backend.domain.recipe.dto.RecipeIngredientDto;
 import org.example.recipe_match_backend.domain.recipe.dto.RecipeStepDto;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipe.RecipeRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipe.RecipeUpdateRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeIdAndUserIdResponse;
 import org.example.recipe_match_backend.domain.recipe.dto.response.recipe.RecipeAllResponse;
 import org.example.recipe_match_backend.domain.recipe.dto.response.recipe.RecipeResponse;
 import org.example.recipe_match_backend.domain.recipe.repository.*;
@@ -16,6 +17,7 @@ import org.example.recipe_match_backend.domain.tool.domain.Tool;
 import org.example.recipe_match_backend.domain.tool.repository.ToolRepository;
 import org.example.recipe_match_backend.domain.user.domain.User;
 import org.example.recipe_match_backend.domain.user.repository.UserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,17 +41,17 @@ public class RecipeService {
     private final RecipeLikeRepository recipeLikeRepository;
 
     @Transactional
-    public Long save(RecipeRequest recipeRequest, Long userId) {
+    public RecipeIdAndUserIdResponse save(RecipeRequest request){
         // 사용자 조회
-        User user = userRepository.findById(userId)
+        User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         // Recipe 엔티티 생성
         Recipe recipe = Recipe.builder()
-                .recipeName(recipeRequest.getRecipeName())
-                .description(recipeRequest.getDescription())
-                .cookingTime(recipeRequest.getCookingTime())
-                .category(recipeRequest.getCategory())
+                .recipeName(request.getRecipeName())
+                .description(request.getDescription())
+                .cookingTime(request.getCookingTime())
+                .category(request.getCategory())
                 .recipeIngredients(new ArrayList<>())
                 .recipeSteps(new ArrayList<>())
                 .recipeTools(new ArrayList<>())
@@ -60,7 +62,7 @@ public class RecipeService {
         user.addRecipe(recipe);
 
         // Ingredients 처리
-        for (RecipeIngredientDto ingredientDto : recipeRequest.getRecipeIngredientDtos()) {
+        for (RecipeIngredientDto ingredientDto : request.getRecipeIngredientDtos()) {
             // 기존 Ingredient 조회 또는 새로 생성
             Ingredient ingredient = ingredientRepository.findByIngredientName(ingredientDto.getIngredientName())
                     .orElseGet(() -> {
@@ -85,7 +87,7 @@ public class RecipeService {
 
 
         // Tools 처리
-        for (String toolName : recipeRequest.getToolName()) {
+        for (String toolName : request.getToolName()) {
             Tool tool = toolRepository.findByToolName(toolName)
                     .orElseGet(() -> {
                         Tool newTool = Tool.builder()
@@ -107,7 +109,7 @@ public class RecipeService {
         }
 
         // RecipeSteps 처리
-        for (RecipeStepDto stepDto : recipeRequest.getRecipeStepDtos()) {
+        for (RecipeStepDto stepDto : request.getRecipeStepDtos()) {
             RecipeStep step = RecipeStep.builder()
                     .stepOrder(stepDto.getStepOrder())
                     .content(stepDto.getContent())
@@ -118,31 +120,31 @@ public class RecipeService {
         // Recipe 저장 (CascadeType.PERSIST에 의해 연관된 엔티티들도 함께 저장됨)
         Recipe savedRecipe = recipeRepository.save(recipe);
 
-        return savedRecipe.getId();
+        return new RecipeIdAndUserIdResponse(request.getUserId(), recipe.getId());
     }
 
     @Transactional
-    public Long update(Long recipeId, RecipeUpdateRequest recipeUpdateRequest){
+    public RecipeIdAndUserIdResponse update(Long recipeId, RecipeUpdateRequest request){
 
         Recipe recipe = recipeRepository.findById(recipeId).get();
 
         //null체크
-        if(recipeUpdateRequest.getRecipeName() != null){
-            recipe.setRecipeName(recipeUpdateRequest.getRecipeName());
+        if(request.getRecipeName() != null){
+            recipe.setRecipeName(request.getRecipeName());
         }
-        if(recipeUpdateRequest.getCategory() != null){
-            recipe.setCategory(recipeUpdateRequest.getCategory());
+        if(request.getCategory() != null){
+            recipe.setCategory(request.getCategory());
         }
-        if(recipeUpdateRequest.getDescription() != null){
-            recipe.setDescription(recipeUpdateRequest.getDescription());
+        if(request.getDescription() != null){
+            recipe.setDescription(request.getDescription());
         }
-        if(recipeUpdateRequest.getCookingTime() != null){
-            recipe.setCookingTime(recipeUpdateRequest.getCookingTime());
+        if(request.getCookingTime() != null){
+            recipe.setCookingTime(request.getCookingTime());
         }
 
-        if(recipeUpdateRequest.getToolName() != null){
+        if(request.getToolName() != null){
             //수정된 toolName db에 저장(중복 제외)
-            for (String toolName : recipeUpdateRequest.getToolName()) {
+            for (String toolName : request.getToolName()) {
                 Tool tool = toolRepository.findByToolName(toolName)
                         .orElseGet(() -> {
                             Tool newTool = Tool.builder()
@@ -165,8 +167,8 @@ public class RecipeService {
         }
 
         //기존 레시피 도구 객체 삭제
-        if(recipeUpdateRequest.getDeleteToolIds() != null){
-            for(Long toolId: recipeUpdateRequest.getDeleteToolIds()){
+        if(request.getDeleteToolIds() != null){
+            for(Long toolId: request.getDeleteToolIds()){
                 RecipeTool recipeTool = recipeToolRepository.findById(toolId).get();
                 recipeTool.getTool().getRecipeTools().remove(recipeTool);
                 recipe.getRecipeTools().remove(recipeTool);
@@ -174,9 +176,9 @@ public class RecipeService {
             }
         }
 
-        if(recipeUpdateRequest.getRecipeIngredientDtos() != null){
+        if(request.getRecipeIngredientDtos() != null){
             //수정된 재료 db에 저장(중복 제외)
-            for (RecipeIngredientDto dto : recipeUpdateRequest.getRecipeIngredientDtos()) {
+            for (RecipeIngredientDto dto : request.getRecipeIngredientDtos()) {
                 // 기존 Ingredient 조회 또는 새로 생성
                 Ingredient ingredient = ingredientRepository.findByIngredientName(dto.getIngredientName())
                         .orElseGet(() -> {
@@ -201,8 +203,8 @@ public class RecipeService {
         }
 
         //기존 레시피 재료 객체 삭제
-        if(recipeUpdateRequest.getDeleteIngredientIds() != null){
-            for(Long ingredientId: recipeUpdateRequest.getDeleteIngredientIds()){
+        if(request.getDeleteIngredientIds() != null){
+            for(Long ingredientId: request.getDeleteIngredientIds()){
                 RecipeIngredient recipeIngredient = recipeIngredientRepository.findById(ingredientId).get();
                 recipeIngredient.getIngredient().getRecipeIngredients().remove(recipeIngredient);
                 recipe.getRecipeIngredients().remove(recipeIngredient);
@@ -210,8 +212,8 @@ public class RecipeService {
             }
         }
 
-        if(recipeUpdateRequest.getRecipeStepDtos() != null){
-            for (RecipeStepDto stepDto : recipeUpdateRequest.getRecipeStepDtos()) {
+        if(request.getRecipeStepDtos() != null){
+            for (RecipeStepDto stepDto : request.getRecipeStepDtos()) {
                 RecipeStep step = RecipeStep.builder()
                         .stepOrder(stepDto.getStepOrder())
                         .content(stepDto.getContent())
@@ -221,15 +223,15 @@ public class RecipeService {
         }
 
         //기존 레시피 단계 객체 삭제
-        if(recipeUpdateRequest.getDeleteStepIds() != null){
-            for(Long stepId: recipeUpdateRequest.getDeleteStepIds()){
+        if(request.getDeleteStepIds() != null){
+            for(Long stepId: request.getDeleteStepIds()){
                 RecipeStep recipeStep = recipeStepRepository.findById(stepId).get();
                 recipe.getRecipeSteps().remove(recipeStep);
                 //recipeStepRepository.deleteById(stepId); : 영속성 전파 ALL
             }
         }
 
-        return recipe.getId();
+        return new RecipeIdAndUserIdResponse(request.getUserId(), recipeId);
     }
 
     @Transactional
@@ -247,21 +249,6 @@ public class RecipeService {
     public List<RecipeAllResponse> findAll(){
         List<Recipe> recipes = recipeRepository.findAll();
         return recipes.stream().map(r -> new RecipeAllResponse(r)).collect(toList());
-    }
-
-    public Long recipeLike(Long recipeId, Long userId){
-        Recipe recipe = recipeRepository.findById(recipeId).get();
-        User user = userRepository.findById(userId).get();
-        if (recipeLikeRepository.findByUserAndRecipe(user, recipe).isEmpty()){
-            RecipeLike recipeLike = RecipeLike.builder().recipe(recipe).user(user).build();
-            recipe.getRecipeLikes().add(recipeLike);
-            user.getRecipeLikes().add(recipeLike);
-            return recipeLike.getId();
-        }
-        else{
-            recipeLikeRepository.deleteByUserAndRecipe(user,recipe);
-            return null;
-        }
     }
 
 }

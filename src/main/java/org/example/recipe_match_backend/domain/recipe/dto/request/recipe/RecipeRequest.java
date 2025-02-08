@@ -20,6 +20,8 @@ import static java.util.stream.Collectors.toList;
 @Getter
 public class RecipeRequest {
 
+    private Long userId;
+
     private String recipeName;//Recipe
 
     private String description;//Recipe

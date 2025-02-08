@@ -14,19 +14,21 @@ import java.util.List;
 @Getter
 public class RecipeUpdateRequest {
 
-    private String recipeName;//Recipe
+    private Long userId;
 
-    private String description;//Recipe
+    private String recipeName; //Recipe
 
-    private Integer cookingTime;//Recipe
+    private String description; //Recipe
 
-    private CategoryType category;//Recipe
+    private Integer cookingTime; //Recipe
 
-    private List<RecipeIngredientDto> recipeIngredientDtos = new ArrayList<>();//RecipeIngredient
+    private CategoryType category; //Recipe
 
-    private List<RecipeStepDto> recipeStepDtos = new ArrayList<>();//RecipeStep
+    private List<RecipeIngredientDto> recipeIngredientDtos = new ArrayList<>(); //RecipeIngredient
 
-    private List<String> toolName = new ArrayList<>();//RecipeTool
+    private List<RecipeStepDto> recipeStepDtos = new ArrayList<>(); //RecipeStep
+
+    private List<String> toolName = new ArrayList<>(); //RecipeTool
 
     private List<Long> deleteToolIds = new ArrayList<>();
 

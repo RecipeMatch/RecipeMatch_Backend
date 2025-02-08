@@ -1,7 +1,7 @@
 package org.example.recipe_match_backend.domain.recipe.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.recipe_match_backend.domain.recipe.dto.request.recipeRating.RecipeAverageRatingRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.request.recipeRating.RecipeIdRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipeRating.RecipeRatingRequest;
 import org.example.recipe_match_backend.domain.recipe.service.RecipeRatingService;
 import org.springframework.http.HttpStatus;
@@ -30,8 +30,8 @@ public class RecipeRatingController {
      * 특정 레시피의 평균 별점을 조회
      * GET /api/recipes/{recipeId}/average
      */
-    @GetMapping("/{recipeId}/average")
-    public ResponseEntity<Double> getAverageRating(@RequestBody RecipeAverageRatingRequest request){
+    @GetMapping("/{recipeId}/ratings/average")
+    public ResponseEntity<Double> getAverageRating(@RequestBody RecipeIdRequest request){
         Double averageRating = recipeRatingService.getAverageRating(request);
         return ResponseEntity.ok(averageRating);
     }

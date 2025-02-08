@@ -3,7 +3,7 @@ package org.example.recipe_match_backend.domain.recipe.service;
 import lombok.RequiredArgsConstructor;
 import org.example.recipe_match_backend.domain.recipe.domain.Recipe;
 import org.example.recipe_match_backend.domain.recipe.domain.RecipeRating;
-import org.example.recipe_match_backend.domain.recipe.dto.request.recipeRating.RecipeAverageRatingRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.request.recipeRating.RecipeIdRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipeRating.RecipeRatingRequest;
 import org.example.recipe_match_backend.domain.recipe.repository.RecipeRatingRepository;
 import org.example.recipe_match_backend.domain.recipe.repository.RecipeRepository;
@@ -50,7 +50,7 @@ public class RecipeRatingService {
     /**
      * 특정 레시피에 대한 평균 별점을 반환한다.
      */
-    public Double getAverageRating(RecipeAverageRatingRequest request){
+    public Double getAverageRating(RecipeIdRequest request){
         Double avg = recipeRatingRepository.findAverageRatingByRecipeId(request.getRecipeId());
         return (avg != null) ? avg : 0.0;
 

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.example.recipe_match_backend.global.entity.BaseEntity;
 import org.example.recipe_match_backend.domain.user.domain.User;
+import org.example.recipe_match_backend.global.exception.recipeRating.InvalidRatingValueException;
 
 import java.util.Objects;
 
@@ -31,6 +32,7 @@ public class RecipeRating extends BaseEntity {
 
     public void updateRating(int newRating){
         if(newRating < 1 || newRating > 5){
+            throw new InvalidRatingValueException();
         }
 
         this.ratingValue = newRating;

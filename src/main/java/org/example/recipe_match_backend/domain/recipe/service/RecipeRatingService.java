@@ -24,6 +24,7 @@ public class RecipeRatingService {
     /**
      * 레시피에 별점을 등록하거나 이미 존재하면 수정한다,
      */
+    @Transactional
     public void rateRecipe(RecipeRatingRequest request){
         Recipe recipe = recipeRepository.findById(request.getRecipeId())
                 .orElseThrow(()->new RuntimeException("Recipe not found"));

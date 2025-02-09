@@ -10,7 +10,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 @AllArgsConstructor
 public enum ErrorCode {
     // common
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "EC001", "서버 오류가 발생했습니다."),
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "ECO001", "서버 오류가 발생했습니다."),
 
     // user
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "EU001", "사용자를 찾을 수 없습니다."),
@@ -24,7 +24,11 @@ public enum ErrorCode {
     ACCESS_DENIED(HttpStatus.FORBIDDEN, "EL003", "접근이 거부되었습니다."),
 
     // rating 관련
-    INVALID_RATING_VALUE(HttpStatus.BAD_REQUEST, "ERA001", "별점은 1과 5 사이여야 합니다.");
+    INVALID_RATING_VALUE(HttpStatus.BAD_REQUEST, "ERA001", "별점은 1과 5 사이여야 합니다."),
+
+    // comment 관련
+    COMMAND_NOT_FOUND(HttpStatus.NOT_FOUND, "ECM001", "댓글을 찾을 수 없습니다."),
+    USER_NOT_AUTH(HttpStatus.UNAUTHORIZED, "ECM002", "댓글을 삭제할 사용자 권한이 없습니다.");
 
 
     private final HttpStatus httpStatus;

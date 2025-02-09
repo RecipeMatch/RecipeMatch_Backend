@@ -4,19 +4,19 @@ import lombok.RequiredArgsConstructor;
 import org.example.recipe_match_backend.domain.recipe.domain.RecipeComment;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipeComment.RecipeCommentRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipeComment.RecipeCommentUpdateRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.request.recipeComment.RecipeDeleteRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.response.recipeComment.RecipeCommentResponse;
 import org.example.recipe_match_backend.domain.recipe.repository.RecipeCommentRepository;
 import org.example.recipe_match_backend.domain.recipe.repository.RecipeRepository;
 import org.example.recipe_match_backend.domain.user.domain.User;
 import org.example.recipe_match_backend.domain.user.repository.UserRepository;
 import org.example.recipe_match_backend.global.exception.recipe.RecipeNotFoundException;
-import org.example.recipe_match_backend.global.exception.recipeComment.CommandNotFoundException;
+import org.example.recipe_match_backend.global.exception.recipeComment.CommentNotFoundException;
+import org.example.recipe_match_backend.global.exception.recipeComment.CommentNotMatchRecipe;
 import org.example.recipe_match_backend.global.exception.recipeComment.UserNotAuthException;
 import org.example.recipe_match_backend.global.exception.user.UserNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,7 +70,7 @@ public class RecipeCommentService {
     @Transactional
     public RecipeCommentResponse updateComment(Long commentId, RecipeCommentUpdateRequest request) {
         RecipeComment comment = recipeCommentRepository.findById(commentId)
-                .orElseThrow(CommandNotFoundException::new);
+                .orElseThrow(CommentNotFoundException::new);
 
         // 댓글 작성자와 요청 사용자가 일치하는지 확인
         if (!comment.getUser().getUid().equals(request.getUserUid())) {
@@ -90,13 +90,18 @@ public class RecipeCommentService {
 
     // 댓글 삭제
     @Transactional
-    public void deleteComment(Long commentId, String userUId) {
+    public void deleteComment(Long commentId, RecipeDeleteRequest request) {
         RecipeComment comment = recipeCommentRepository.findById(commentId)
-                .orElseThrow(CommandNotFoundException::new);
+                .orElseThrow(CommentNotFoundException::new);
 
         // 댓글 작성자와 요청 사용자가 일치하는지 확인
-        if (!comment.getUser().getUid().equals(userUId)) {
-            throw new RuntimeException("댓글 삭제 권한이 없습니다.");
+        if (!comment.getUser().getUid().equals(request.getUserUid())) {
+            throw new UserNotAuthException();
+        }
+
+        // 해당 댓글이 레시피에 속하는지 확인
+        if (!comment.getRecipe().getId().equals(request.getRecipeId())) {
+            throw new CommentNotMatchRecipe();
         }
 
         recipeCommentRepository.delete(comment);

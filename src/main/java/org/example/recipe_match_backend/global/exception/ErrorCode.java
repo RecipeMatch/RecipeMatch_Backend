@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
@@ -27,8 +25,9 @@ public enum ErrorCode {
     INVALID_RATING_VALUE(HttpStatus.BAD_REQUEST, "ERA001", "별점은 1과 5 사이여야 합니다."),
 
     // comment 관련
-    COMMAND_NOT_FOUND(HttpStatus.NOT_FOUND, "ECM001", "댓글을 찾을 수 없습니다."),
-    USER_NOT_AUTH(HttpStatus.UNAUTHORIZED, "ECM002", "댓글을 삭제할 사용자 권한이 없습니다.");
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "ECM001", "댓글을 찾을 수 없습니다."),
+    USER_NOT_AUTH(HttpStatus.UNAUTHORIZED, "ECM002", "댓글을 삭제할 사용자 권한이 없습니다."),
+    COMMENT_NOT_MATCH_RECIPE(HttpStatus.NOT_FOUND, "ECM003", "해당 댓글은 요청한 레시피에 속하지 않습니다.");
 
 
     private final HttpStatus httpStatus;

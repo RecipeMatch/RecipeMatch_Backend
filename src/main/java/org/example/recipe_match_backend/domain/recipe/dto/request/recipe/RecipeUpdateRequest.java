@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 public class RecipeUpdateRequest {
 
-    private Long userId;
+    private String userUid;
 
     private String recipeName; //Recipe
 

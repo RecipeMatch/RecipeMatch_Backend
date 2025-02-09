@@ -26,7 +26,7 @@ public class RecipeRatingService {
      */
     @Transactional
     public void rateRecipe(Long recipeId, RecipeRatingRequest request){
-        Recipe recipe = recipeRepository.findById(request.getRecipeId())
+        Recipe recipe = recipeRepository.findById(recipeId)
                 .orElseThrow(()->new RuntimeException("Recipe not found"));
         User user = userRepository.findByUid(request.getUserUid())
                 .orElseThrow(()->new RuntimeException("User not found"));

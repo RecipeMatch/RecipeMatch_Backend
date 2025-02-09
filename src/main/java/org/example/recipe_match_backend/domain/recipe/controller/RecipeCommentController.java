@@ -36,7 +36,9 @@ public class RecipeCommentController {
         return ResponseEntity.ok(response);
     }
 
-    // 댓글 삭제 (DELETE /api/recipes/comments/{commentId}?userUId=xxx)
+    /**
+     * 댓글 삭제 (DELETE /api/recipes/comments/{commentId}?userUid=xxx)
+     */
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long commentId,

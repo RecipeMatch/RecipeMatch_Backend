@@ -62,7 +62,7 @@ public class RecipeCommentService {
 
         // 댓글 생성 (id는 자동생성)
         RecipeComment comment = new RecipeComment(null, user, recipe, request.getContent());
-        RecipeComment savedComment = recipeCommentRepository.save(comment);
+        recipeCommentRepository.save(comment);
 
     }
 
@@ -74,7 +74,7 @@ public class RecipeCommentService {
 
         // 댓글 작성자와 요청 사용자가 일치하는지 확인
         if (!comment.getUser().getUid().equals(request.getUserUid())) {
-            throw new RuntimeException("댓글 수정 권한이 없습니다.");
+            throw new UserNotAuthException();
         }
 
         // 댓글 내용 수정

@@ -7,5 +7,5 @@ import lombok.*;
 @Builder
 @Getter
 public class RecipeCommentDeleteRequest {
-    private String UserUid;
+    private String userUid;
 }

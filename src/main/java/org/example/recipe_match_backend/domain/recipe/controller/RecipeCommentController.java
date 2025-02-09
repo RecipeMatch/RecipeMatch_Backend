@@ -56,6 +56,6 @@ public class RecipeCommentController {
             @PathVariable Long commentId,
             @RequestBody RecipeCommentDeleteRequest request) {
         recipeCommentService.deleteComment(commentId, request);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

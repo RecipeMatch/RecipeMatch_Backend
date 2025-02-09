@@ -20,7 +20,7 @@ public class RecipeRatingController {
      * POST /api/recipes/{recipeId}/ratings
      * RequestBody에 userId와 ratingValue를 포함
      */
-    @PostMapping("/{recipeId}/ratings")
+    @PostMapping("/ratings")
     public ResponseEntity<Void> rateRecipe(@RequestBody RecipeRatingRequest request){
         recipeRatingService.rateRecipe(request);
         return ResponseEntity.status(HttpStatus.OK).build();
@@ -30,7 +30,7 @@ public class RecipeRatingController {
      * 특정 레시피의 평균 별점을 조회
      * GET /api/recipes/{recipeId}/average
      */
-    @GetMapping("/{recipeId}/ratings/average")
+    @GetMapping("/ratings/average")
     public ResponseEntity<Double> getAverageRating(@RequestBody RecipeIdRequest request){
         Double averageRating = recipeRatingService.getAverageRating(request);
         return ResponseEntity.ok(averageRating);

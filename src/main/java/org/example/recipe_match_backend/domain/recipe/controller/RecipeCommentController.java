@@ -3,7 +3,7 @@ package org.example.recipe_match_backend.domain.recipe.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipeComment.RecipeCommentRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipeComment.RecipeCommentUpdateRequest;
-import org.example.recipe_match_backend.domain.recipe.dto.request.recipeComment.RecipeDeleteRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.request.recipeComment.RecipeCommentDeleteRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.response.recipeComment.RecipeCommentResponse;
 import org.example.recipe_match_backend.domain.recipe.service.RecipeCommentService;
 import org.springframework.http.HttpStatus;
@@ -54,7 +54,7 @@ public class RecipeCommentController {
     @DeleteMapping("/comments/{commentId}")
     public ResponseEntity<Void> deleteComment(
             @PathVariable Long commentId,
-            @RequestBody RecipeDeleteRequest request) {
+            @RequestBody RecipeCommentDeleteRequest request) {
         recipeCommentService.deleteComment(commentId, request);
         return ResponseEntity.noContent().build();
     }

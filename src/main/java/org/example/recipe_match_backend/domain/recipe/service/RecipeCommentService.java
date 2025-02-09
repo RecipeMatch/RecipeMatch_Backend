@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.recipe_match_backend.domain.recipe.domain.RecipeComment;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipeComment.RecipeCommentRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipeComment.RecipeCommentUpdateRequest;
-import org.example.recipe_match_backend.domain.recipe.dto.request.recipeComment.RecipeDeleteRequest;
+import org.example.recipe_match_backend.domain.recipe.dto.request.recipeComment.RecipeCommentDeleteRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.response.recipeComment.RecipeCommentResponse;
 import org.example.recipe_match_backend.domain.recipe.repository.RecipeCommentRepository;
 import org.example.recipe_match_backend.domain.recipe.repository.RecipeRepository;
@@ -90,18 +90,13 @@ public class RecipeCommentService {
 
     // 댓글 삭제
     @Transactional
-    public void deleteComment(Long commentId, RecipeDeleteRequest request) {
+    public void deleteComment(Long commentId, RecipeCommentDeleteRequest request) {
         RecipeComment comment = recipeCommentRepository.findById(commentId)
                 .orElseThrow(CommentNotFoundException::new);
 
         // 댓글 작성자와 요청 사용자가 일치하는지 확인
         if (!comment.getUser().getUid().equals(request.getUserUid())) {
             throw new UserNotAuthException();
-        }
-
-        // 해당 댓글이 레시피에 속하는지 확인
-        if (!comment.getRecipe().getId().equals(request.getRecipeId())) {
-            throw new CommentNotMatchRecipe();
         }
 
         recipeCommentRepository.delete(comment);

@@ -6,7 +6,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Getter
-public class RecipeDeleteRequest {
-    private Long recipeId;
+public class RecipeCommentDeleteRequest {
     private String UserUid;
 }

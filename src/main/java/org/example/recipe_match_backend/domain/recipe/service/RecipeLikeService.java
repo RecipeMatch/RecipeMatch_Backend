@@ -20,6 +20,7 @@ public class RecipeLikeService {
     private UserRepository userRepository;
     private RecipeLikeRepository recipeLikeRepository;
 
+    @Transactional
     public Long recipeLike(RecipeIdAndUserIdRequest request){
         Recipe recipe = recipeRepository.findById(request.getRecipeId()).get();
         User user = userRepository.findById(request.getUserId()).get();

@@ -1,4 +1,4 @@
-package org.example.recipe_match_backend.global.exception.login;
+package org.example.recipe_match_backend.global.exception.user;
 
 import org.example.recipe_match_backend.global.exception.BusinessException;
 import org.example.recipe_match_backend.global.exception.ErrorCode;

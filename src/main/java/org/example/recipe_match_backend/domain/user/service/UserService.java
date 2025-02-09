@@ -8,7 +8,7 @@ import org.example.recipe_match_backend.domain.user.dto.request.RefreshRequest;
 import org.example.recipe_match_backend.domain.user.dto.response.TokenIncludeNicknameResponse;
 import org.example.recipe_match_backend.domain.user.dto.response.TokenResponse;
 import org.example.recipe_match_backend.global.exception.login.InvalidTokenException;
-import org.example.recipe_match_backend.global.exception.login.UserNotFoundException;
+import org.example.recipe_match_backend.global.exception.user.UserNotFoundException;
 import org.example.recipe_match_backend.global.jwt.JwtTokenProvider;
 import org.example.recipe_match_backend.domain.user.repository.UserRepository;
 import org.springframework.stereotype.Service;

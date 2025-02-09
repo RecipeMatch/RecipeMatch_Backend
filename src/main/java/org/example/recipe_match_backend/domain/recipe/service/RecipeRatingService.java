@@ -9,6 +9,8 @@ import org.example.recipe_match_backend.domain.recipe.repository.RecipeRatingRep
 import org.example.recipe_match_backend.domain.recipe.repository.RecipeRepository;
 import org.example.recipe_match_backend.domain.user.domain.User;
 import org.example.recipe_match_backend.domain.user.repository.UserRepository;
+import org.example.recipe_match_backend.global.exception.recipe.RecipeNotFoundException;
+import org.example.recipe_match_backend.global.exception.user.UserNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +27,11 @@ public class RecipeRatingService {
      * 레시피에 별점을 등록하거나 이미 존재하면 수정한다,
      */
     @Transactional
-    public void rateRecipe(RecipeRatingRequest request){
-        Recipe recipe = recipeRepository.findById(request.getRecipeId())
-                .orElseThrow(()->new RuntimeException("Recipe not found"));
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(()->new RuntimeException("User not found"));
+    public void rateRecipe(Long recipeId, RecipeRatingRequest request){
+        Recipe recipe = recipeRepository.findById(recipeId)
+                .orElseThrow(RecipeNotFoundException::new);
+        User user = userRepository.findByUid(request.getUserUid())
+                .orElseThrow(UserNotFoundException::new);
 
         RecipeRating recipeRating = recipeRatingRepository.findByRecipeAndUser(recipe, user)
                 .orElse(null);
@@ -51,8 +53,8 @@ public class RecipeRatingService {
     /**
      * 특정 레시피에 대한 평균 별점을 반환한다.
      */
-    public Double getAverageRating(RecipeIdRequest request){
-        Double avg = recipeRatingRepository.findAverageRatingByRecipeId(request.getRecipeId());
+    public Double getAverageRating(Long recipeId){
+        Double avg = recipeRatingRepository.findAverageRatingByRecipeId(recipeId);
         return (avg != null) ? avg : 0.0;
 
     }

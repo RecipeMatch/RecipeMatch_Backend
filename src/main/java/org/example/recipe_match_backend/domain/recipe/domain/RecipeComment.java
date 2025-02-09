@@ -40,5 +40,9 @@ public class RecipeComment extends BaseEntity {
         return Objects.hashCode(id);
     }
 
+    // 댓글 내용 수정 메서드
+    public void updateContent(String content) {
+        this.content = content;
+    }
 
 }

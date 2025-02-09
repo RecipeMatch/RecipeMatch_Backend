@@ -9,7 +9,7 @@ import org.example.recipe_match_backend.domain.recipe.dto.RecipeIngredientDto;
 import org.example.recipe_match_backend.domain.recipe.dto.RecipeStepDto;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipe.RecipeRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipe.RecipeUpdateRequest;
-import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeIdAndUserIdResponse;
+import org.example.recipe_match_backend.domain.recipe.dto.response.recipe.RecipeIdAndUserUidResponse;
 import org.example.recipe_match_backend.domain.recipe.dto.response.recipe.RecipeAllResponse;
 import org.example.recipe_match_backend.domain.recipe.dto.response.recipe.RecipeResponse;
 import org.example.recipe_match_backend.domain.recipe.repository.*;
@@ -17,7 +17,6 @@ import org.example.recipe_match_backend.domain.tool.domain.Tool;
 import org.example.recipe_match_backend.domain.tool.repository.ToolRepository;
 import org.example.recipe_match_backend.domain.user.domain.User;
 import org.example.recipe_match_backend.domain.user.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,9 +41,9 @@ public class RecipeService {
     private final RecipeBookMarkRepository recipeBookMarkRepository;
 
     @Transactional
-    public RecipeIdAndUserIdResponse save(RecipeRequest request){
+    public RecipeIdAndUserUidResponse save(RecipeRequest request){
         // 사용자 조회
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findByUid(request.getUserUid())
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
         // Recipe 엔티티 생성
@@ -121,11 +120,11 @@ public class RecipeService {
         // Recipe 저장 (CascadeType.PERSIST에 의해 연관된 엔티티들도 함께 저장됨)
         Recipe savedRecipe = recipeRepository.save(recipe);
 
-        return new RecipeIdAndUserIdResponse(request.getUserId(), recipe.getId());
+        return new RecipeIdAndUserUidResponse(request.getUserUid(), recipe.getId());
     }
 
     @Transactional
-    public RecipeIdAndUserIdResponse update(Long recipeId, RecipeUpdateRequest request){
+    public RecipeIdAndUserUidResponse update(Long recipeId, RecipeUpdateRequest request){
 
         Recipe recipe = recipeRepository.findById(recipeId).get();
 
@@ -232,7 +231,7 @@ public class RecipeService {
             }
         }
 
-        return new RecipeIdAndUserIdResponse(request.getUserId(), recipeId);
+        return new RecipeIdAndUserUidResponse(request.getUserUid(), recipeId);
     }
 
     @Transactional

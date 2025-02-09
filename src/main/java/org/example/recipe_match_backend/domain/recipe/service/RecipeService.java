@@ -39,6 +39,7 @@ public class RecipeService {
     private final RecipeStepRepository recipeStepRepository;
     private final RecipeToolRepository recipeToolRepository;
     private final RecipeLikeRepository recipeLikeRepository;
+    private final RecipeBookMarkRepository recipeBookMarkRepository;
 
     @Transactional
     public RecipeIdAndUserIdResponse save(RecipeRequest request){
@@ -243,8 +244,10 @@ public class RecipeService {
         Recipe recipe = recipeRepository.findById(recipeId).get();
         User user = userRepository.findById(userId).get();
         Boolean recipeLike = recipeLikeRepository.findByUserAndRecipe(user,recipe).isPresent();
-        int likeSize = recipeLikeRepository.findAll().size();
-        return new RecipeResponse(recipe,recipeLike,likeSize);
+        Boolean recipeBookMark = recipeBookMarkRepository.findByUserAndRecipe(user, recipe).isPresent();
+        int likeSize = recipeLikeRepository.findByRecipe(recipe).size();
+        int bookMarkSize = recipeBookMarkRepository.findByRecipe(recipe).size();
+        return new RecipeResponse(recipe,recipeLike,likeSize,recipeBookMark,bookMarkSize);
     }
 
     public List<RecipeAllResponse> findAll(){

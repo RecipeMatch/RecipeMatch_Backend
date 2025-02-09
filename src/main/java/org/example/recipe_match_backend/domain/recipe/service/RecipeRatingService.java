@@ -9,6 +9,8 @@ import org.example.recipe_match_backend.domain.recipe.repository.RecipeRatingRep
 import org.example.recipe_match_backend.domain.recipe.repository.RecipeRepository;
 import org.example.recipe_match_backend.domain.user.domain.User;
 import org.example.recipe_match_backend.domain.user.repository.UserRepository;
+import org.example.recipe_match_backend.global.exception.recipe.RecipeNotFoundException;
+import org.example.recipe_match_backend.global.exception.user.UserNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,9 +29,9 @@ public class RecipeRatingService {
     @Transactional
     public void rateRecipe(Long recipeId, RecipeRatingRequest request){
         Recipe recipe = recipeRepository.findById(recipeId)
-                .orElseThrow(()->new RuntimeException("Recipe not found"));
+                .orElseThrow(RecipeNotFoundException::new);
         User user = userRepository.findByUid(request.getUserUid())
-                .orElseThrow(()->new RuntimeException("User not found"));
+                .orElseThrow(UserNotFoundException::new);
 
         RecipeRating recipeRating = recipeRatingRepository.findByRecipeAndUser(recipe, user)
                 .orElse(null);

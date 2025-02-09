@@ -8,7 +8,7 @@ import lombok.*;
 @Getter
 public class RecipeRatingRequest {
     private Long recipeId;
-    private Long userId;
+    private String userUid;
     private int ratingValue;
 
 }

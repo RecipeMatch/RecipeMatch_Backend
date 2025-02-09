@@ -28,7 +28,7 @@ public class RecipeRatingService {
     public void rateRecipe(RecipeRatingRequest request){
         Recipe recipe = recipeRepository.findById(request.getRecipeId())
                 .orElseThrow(()->new RuntimeException("Recipe not found"));
-        User user = userRepository.findById(request.getUserId())
+        User user = userRepository.findByUid(request.getUserUid())
                 .orElseThrow(()->new RuntimeException("User not found"));
 
         RecipeRating recipeRating = recipeRatingRepository.findByRecipeAndUser(recipe, user)

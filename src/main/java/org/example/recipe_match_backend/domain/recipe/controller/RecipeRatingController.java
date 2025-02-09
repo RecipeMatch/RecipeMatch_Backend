@@ -17,8 +17,6 @@ public class RecipeRatingController {
 
     /**
      * 별점 등록/수정
-     * POST /api/recipes/{recipeId}/ratings
-     * RequestBody에 userId와 ratingValue를 포함
      */
     @PostMapping("/ratings")
     public ResponseEntity<Void> rateRecipe(@RequestBody RecipeRatingRequest request){
@@ -28,7 +26,6 @@ public class RecipeRatingController {
 
     /**
      * 특정 레시피의 평균 별점을 조회
-     * GET /api/recipes/{recipeId}/average
      */
     @GetMapping("/ratings/average")
     public ResponseEntity<Double> getAverageRating(@RequestBody RecipeIdRequest request){

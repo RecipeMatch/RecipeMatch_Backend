@@ -1,12 +1,10 @@
 package org.example.recipe_match_backend.domain.recipe.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipe.RecipeIdAndUserIdRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipe.RecipeRequest;
 import org.example.recipe_match_backend.domain.recipe.dto.request.recipe.RecipeUpdateRequest;
-import org.example.recipe_match_backend.domain.recipe.dto.response.RecipeIdAndUserIdResponse;
+import org.example.recipe_match_backend.domain.recipe.dto.response.recipe.RecipeIdAndUserUidResponse;
 import org.example.recipe_match_backend.domain.recipe.dto.response.recipe.RecipeAllResponse;
 import org.example.recipe_match_backend.domain.recipe.dto.response.recipe.RecipeResponse;
 import org.example.recipe_match_backend.domain.recipe.service.RecipeService;
@@ -33,13 +31,13 @@ public class RecipeController {
     }
 
     @PostMapping("/recipe")
-    public ResponseEntity<RecipeIdAndUserIdResponse> create(@RequestBody RecipeRequest request){
+    public ResponseEntity<RecipeIdAndUserUidResponse> create(@RequestBody RecipeRequest request){
         return ResponseEntity.ok(recipeService.save(request));
 
     }
 
     @PatchMapping("/recipe/{recipeId}")
-    public ResponseEntity<RecipeIdAndUserIdResponse> update(@PathVariable Long recipeId, @RequestBody RecipeUpdateRequest request){
+    public ResponseEntity<RecipeIdAndUserUidResponse> update(@PathVariable Long recipeId, @RequestBody RecipeUpdateRequest request){
         return ResponseEntity.ok(recipeService.update(recipeId, request));
     }
 

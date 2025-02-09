@@ -17,6 +17,17 @@ public class RecipeComment extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "recipe_id")
+    private Recipe recipe;
+
+    @Column(length = 1000)
+    private String content;
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
@@ -29,15 +40,8 @@ public class RecipeComment extends BaseEntity {
         return Objects.hashCode(id);
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recipe_id")
-    private Recipe recipe;
-
-    @Column(length = 1000)
-    private String content;
-
+    // 댓글 내용 수정 메서드
+    public void updateContent(String content) {
+        this.content = content;
+    }
 }

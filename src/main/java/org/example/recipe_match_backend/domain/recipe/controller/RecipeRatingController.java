@@ -16,21 +16,21 @@ public class RecipeRatingController {
     private final RecipeRatingService recipeRatingService;
 
     /**
-     * 별점 등록/수정
+     * 별점 등록/수정 (Post /api/recipes/{recipeId}/ratings)
      */
-    @PostMapping("/ratings")
-    public ResponseEntity<Void> rateRecipe(@RequestBody RecipeRatingRequest request){
-        recipeRatingService.rateRecipe(request);
+    @PostMapping("/{recipeId}/ratings")
+    public ResponseEntity<Void> rateRecipe(@PathVariable Long recipeId,
+                                           @RequestBody RecipeRatingRequest request){
+        recipeRatingService.rateRecipe(recipeId, request);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     /**
-     * 특정 레시피의 평균 별점을 조회
+     * 특정 레시피의 평균 별점을 조회 (Get /api/recipes/{recipeId}/ratings/average)
      */
-    @GetMapping("/ratings/average")
-    public ResponseEntity<Double> getAverageRating(@RequestBody RecipeIdRequest request){
-        Double averageRating = recipeRatingService.getAverageRating(request);
+    @GetMapping("/{recipeId}/ratings/average")
+    public ResponseEntity<Double> getAverageRating(@PathVariable Long recipeId){
+        Double averageRating = recipeRatingService.getAverageRating(recipeId);
         return ResponseEntity.ok(averageRating);
     }
-
 }

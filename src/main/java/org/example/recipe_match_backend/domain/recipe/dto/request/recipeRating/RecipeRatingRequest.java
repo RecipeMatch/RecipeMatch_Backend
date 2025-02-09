@@ -7,7 +7,6 @@ import lombok.*;
 @Builder
 @Getter
 public class RecipeRatingRequest {
-    private Long recipeId;
     private String userUid;
     private int ratingValue;
 

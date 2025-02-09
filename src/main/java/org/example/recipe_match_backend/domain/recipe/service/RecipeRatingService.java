@@ -25,7 +25,7 @@ public class RecipeRatingService {
      * 레시피에 별점을 등록하거나 이미 존재하면 수정한다,
      */
     @Transactional
-    public void rateRecipe(RecipeRatingRequest request){
+    public void rateRecipe(Long recipeId, RecipeRatingRequest request){
         Recipe recipe = recipeRepository.findById(request.getRecipeId())
                 .orElseThrow(()->new RuntimeException("Recipe not found"));
         User user = userRepository.findByUid(request.getUserUid())
@@ -51,8 +51,8 @@ public class RecipeRatingService {
     /**
      * 특정 레시피에 대한 평균 별점을 반환한다.
      */
-    public Double getAverageRating(RecipeIdRequest request){
-        Double avg = recipeRatingRepository.findAverageRatingByRecipeId(request.getRecipeId());
+    public Double getAverageRating(Long recipeId){
+        Double avg = recipeRatingRepository.findAverageRatingByRecipeId(recipeId);
         return (avg != null) ? avg : 0.0;
 
     }

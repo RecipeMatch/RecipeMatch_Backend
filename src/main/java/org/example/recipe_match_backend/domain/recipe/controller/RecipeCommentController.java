@@ -9,12 +9,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/recipes")
 @RequiredArgsConstructor
 public class RecipeCommentController {
 
     private final RecipeCommentService recipeCommentService;
+
+    /**
+     * 특정 레시피의 모든 댓글 조회 (GET /api/recipes/{recipeId}/comments)
+     */
+    @GetMapping("/{recipeId}/comments")
+    public ResponseEntity<List<RecipeCommentResponse>> getCommentsByRecipe(@PathVariable Long recipeId) {
+        List<RecipeCommentResponse> responses = recipeCommentService.getCommentsByRecipeId(recipeId);
+        return ResponseEntity.ok(responses);
+    }
 
     /**
      * 댓글 생성 (POST /api/recipes/comments)

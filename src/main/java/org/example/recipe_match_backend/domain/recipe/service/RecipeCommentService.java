@@ -18,6 +18,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -26,6 +29,25 @@ public class RecipeCommentService {
     private final RecipeRepository recipeRepository;
     private final RecipeCommentRepository recipeCommentRepository;
     private final UserRepository userRepository;
+
+
+    // 특정 레시피의 모든 댓글 조회
+    public List<RecipeCommentResponse> getCommentsByRecipeId(Long recipeId) {
+        // Optional: 레시피가 존재하는지 확인 (존재하지 않으면 예외 발생)
+        recipeRepository.findById(recipeId)
+                .orElseThrow(RecipeNotFoundException::new);
+
+        List<RecipeComment> comments = recipeCommentRepository.findAllByRecipeId(recipeId);
+
+        return comments.stream()
+                .map(comment -> RecipeCommentResponse.builder()
+                        .id(comment.getId())
+                        .userUid(comment.getUser().getUid())
+                        .recipeId(comment.getRecipe().getId())
+                        .content(comment.getContent())
+                        .build())
+                .collect(Collectors.toList());
+    }
 
     // 댓글 생성
     @Transactional

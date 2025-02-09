@@ -29,7 +29,7 @@ public class RecipeCommentService {
 
     // 댓글 생성
     @Transactional
-    public RecipeCommentResponse createComment(RecipeCommentRequest request) {
+    public void createComment(RecipeCommentRequest request) {
         // 레시피 조회
         var recipe = recipeRepository.findById(request.getRecipeId())
                 .orElseThrow(RecipeNotFoundException::new);
@@ -42,12 +42,6 @@ public class RecipeCommentService {
         RecipeComment comment = new RecipeComment(null, user, recipe, request.getContent());
         RecipeComment savedComment = recipeCommentRepository.save(comment);
 
-        return RecipeCommentResponse.builder()
-                .id(savedComment.getId())
-                .userUid(savedComment.getUser().getUid())
-                .recipeId(savedComment.getRecipe().getId())
-                .content(savedComment.getContent())
-                .build();
     }
 
     // 댓글 수정

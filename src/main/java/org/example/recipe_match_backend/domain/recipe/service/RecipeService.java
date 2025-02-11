@@ -17,6 +17,7 @@ import org.example.recipe_match_backend.domain.tool.domain.Tool;
 import org.example.recipe_match_backend.domain.tool.repository.ToolRepository;
 import org.example.recipe_match_backend.domain.user.domain.User;
 import org.example.recipe_match_backend.domain.user.repository.UserRepository;
+import org.example.recipe_match_backend.type.DifficultyType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -116,6 +117,8 @@ public class RecipeService {
                     .build();
             recipe.addRecipeStep(step);
         }
+
+        recipeDifficulty(recipe, recipe.getCookingTime(), recipe.getRecipeSteps().size(),recipe.getRecipeIngredients().size() , recipe.getRecipeTools().size());
 
         // Recipe 저장 (CascadeType.PERSIST에 의해 연관된 엔티티들도 함께 저장됨)
         Recipe savedRecipe = recipeRepository.save(recipe);
@@ -231,6 +234,8 @@ public class RecipeService {
             }
         }
 
+        recipeDifficulty(recipe, recipe.getCookingTime(), recipe.getRecipeSteps().size(),recipe.getRecipeIngredients().size() , recipe.getRecipeTools().size());
+
         return new RecipeIdAndUserUidResponse(request.getUserUid(), recipeId);
     }
 
@@ -252,6 +257,20 @@ public class RecipeService {
     public List<RecipeAllResponse> findAll(){
         List<Recipe> recipes = recipeRepository.findAll();
         return recipes.stream().map(r -> new RecipeAllResponse(r)).collect(toList());
+    }
+
+    private void recipeDifficulty(Recipe recipe,int cookingTime, int stepSize, int ingredientSize, int toolSize){
+
+        int point = (cookingTime/3)+stepSize+ingredientSize+(2*toolSize);
+
+        if(0 <= point && point <= 33){
+            recipe.setDifficulty(DifficultyType.초보환영);
+        } else if (34 <= point && point <= 66) {
+            recipe.setDifficulty(DifficultyType.중간);
+        } else if (67 <= point) {
+            recipe.setDifficulty(DifficultyType.어려움);
+        }
+
     }
 
 }

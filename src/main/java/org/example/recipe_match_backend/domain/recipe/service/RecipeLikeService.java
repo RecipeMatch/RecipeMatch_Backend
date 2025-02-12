@@ -16,9 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class RecipeLikeService {
 
-    private RecipeRepository recipeRepository;
-    private UserRepository userRepository;
-    private RecipeLikeRepository recipeLikeRepository;
+    private final RecipeRepository recipeRepository;
+    private final UserRepository userRepository;
+    private final RecipeLikeRepository recipeLikeRepository;
 
     @Transactional
     public Long recipeLike(RecipeIdAndUserIdRequest request){
